@@ -14,13 +14,13 @@ public class WebcamTestOpMode  extends OpMode {
     AprilTagsWebcam aprilTagWebcam = new AprilTagsWebcam();
     Launcher launcher = new Launcher();
 
-    TurretServo turret = new TurretServo();
+   // TurretServo turret = new TurretServo();
 
     @Override
     public void init() {
         aprilTagWebcam.init(hardwareMap, telemetry);
         launcher.init(hardwareMap);
-        turret.init(hardwareMap);
+       // turret.init(hardwareMap);
     }
 
     @Override
@@ -30,48 +30,46 @@ public class WebcamTestOpMode  extends OpMode {
         AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24); // TAG ID 24 is the red goal
         aprilTagWebcam.displayDetectionTelemetry(id24);
         // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#??)
-        if(id24 != null) {
-            double angleToTag = id24.ftcPose.yaw;
-            turret.changeTurretByDegrees(angleToTag);
+        double distanceToGoalCM = 0;
 
-            double distanceToGoalCM = id24.ftcPose.range;
+        if (id24 != null) {
+            double angleToTag = id24.ftcPose.yaw;
+            //turret.changeTurretByDegrees(angleToTag);
+
+            distanceToGoalCM = id24.ftcPose.range;
             // NOTE: use this after distance vs speed has been measured and calibrated
-            launcher.setMotorVelocityForDistance(distanceToGoalCM);
-        }
-        else {
+            //launcher.setMotorVelocityForDistance(distanceToGoalCM);
+        } else {
             // if we can't see the target
             // default back to neutral/default
-            turret.resetTurret();
+            // turret.resetTurret();
             // and turn launch motors off
             launcher.stopLauncher();
         }
 
         // these are manual test methods to assist with tuning the target launch motor velocity at measured distances
-        if (gamepad1.yWasPressed()) {
-            launcher.incrementLaunchSpeed();
+        if (gamepad2.leftStickButtonWasPressed()) {
+      //      launcher.incrementLaunchSpeed();
+        } else if (gamepad2.rightStickButtonWasPressed()) {
+      //      launcher.decrementLaunchSpeed();
         }
-        else if (gamepad1.bWasPressed()) {
-            launcher.decrementLaunchSpeed();
-        }
-        launcher.setMotorVelocity();
+      //  launcher.setMotorVelocity();
 
 
-        if(gamepad1.right_trigger > .5) {
-            if(!launcher.getTriggerActive()) {
+        if (gamepad1.right_trigger > .5) {
+       //     if (!launcher.getTriggerActive()) {
                 // TODO: maybe also check to see that launcher measured velocities are within 10%(?) of target velocity
-                launcher.triggerFeeder();
-            }
-            else {
+       //         launcher.triggerFeeder();
+            } else {
                 // already triggered, wait for it to reset
             }
         }
-        telemetry.addLine("Feeder active: " + launcher.getTriggerActive());
+       // telemetry.addData("Distance to goal: ", distanceToGoalCM);
+       // telemetry.addLine("Feeder active: " + launcher.getTriggerActive());
 
 
-        telemetry.addLine("Target Velocity: " + launcher.getTargetLaunchSpeed());
-        telemetry.addLine("Lower Velocity: " + launcher.getLowerVelocity());
-        telemetry.addLine("Upper Velocity: " + launcher.getUpperVelocity());
+        //telemetry.addLine("Target Velocity: " + launcher.getTargetLaunchSpeed());
+        //telemetry.addLine("Lower Velocity: " + launcher.getLowerVelocity());
+        //telemetry.addLine("Upper Velocity: " + launcher.getUpperVelocity());
 
-
-    }
 }
