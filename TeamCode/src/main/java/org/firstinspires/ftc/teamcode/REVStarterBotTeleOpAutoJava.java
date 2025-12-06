@@ -2,20 +2,20 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
 public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
 
   private DcMotor flywheel;
-  private CRServo shotControl;
+  private Servo shotControl;
   private DcMotor coreHex;
   private DcMotor leftDrive;
   private DcMotor rightDrive;
-
+  double servoPosition;
   private static final int bankVelocity = 1050;
   private static final int farVelocity = 2200;
   private static final int maxVelocity = 2200;
@@ -35,7 +35,7 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
     coreHex = hardwareMap.get(DcMotor.class, "coreHex");
     leftDrive = hardwareMap.get(DcMotor.class, "leftDrive");
     rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
-    shotControl = hardwareMap.get(CRServo.class, "shotControl");
+    shotControl = hardwareMap.get(Servo.class, "shotControl");
 
   // Establishing the direction and mode for the motors
     flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -59,6 +59,7 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
       doAutoRedBack();
     } else {
       doTeleOp();
+      servoPosition = 0;
     }
   }
 
@@ -106,6 +107,7 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
         telemetry.addData("Flywheel Velocity", ((DcMotorEx) flywheel).getVelocity());
         telemetry.addData("Flywheel Power", flywheel.getPower());
         telemetry.update();
+        shotControl.setPosition(servoPosition);
       }
     }
   }
@@ -135,9 +137,9 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
       coreHex.setPower(-0.5);
     }
     if (gamepad1.dpad_left) {
-      shotControl.setPower(1);
+      servoPosition -= 0.01;
     } else if (gamepad1.dpad_right) {
-      shotControl.setPower(-1);
+      servoPosition += 0.01;
     }
   }
 
@@ -278,18 +280,21 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
     if (opModeIsActive()) {
       telemetry.addData("RUNNING OPMODE", operationSelected);
       telemetry.update();
+      leftDrive.setPower(1);
+      rightDrive.setPower(1);
+      sleep(1125);
       leftDrive.setPower(0);
       rightDrive.setPower(0);
-      sleep(0);
+      sleep(100);
+      leftDrive.setPower(-0.5);
+      rightDrive.setPower(0.5);
+      sleep(500);
       leftDrive.setPower(0);
       rightDrive.setPower(0);
-      sleep(0);
-      leftDrive.setPower(0);
-      rightDrive.setPower(0);
-      sleep(0);
-      leftDrive.setPower(0);
-      rightDrive.setPower(0);
-      sleep(0);
+      sleep(100);
+      leftDrive.setPower(1);
+      rightDrive.setPower(1);
+      sleep(750);
       // Fire balls
       autoLaunchTimer.reset();
       while (opModeIsActive() && autoLaunchTimer.milliseconds() < 10000) {
@@ -336,18 +341,21 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
     if (opModeIsActive()) {
       telemetry.addData("RUNNING OPMODE", operationSelected);
       telemetry.update();
+      leftDrive.setPower(1);
+      rightDrive.setPower(1);
+      sleep(1125);
       leftDrive.setPower(0);
       rightDrive.setPower(0);
-      sleep(0);
+      sleep(100);
+      leftDrive.setPower(0.5);
+      rightDrive.setPower(-0.5);
+      sleep(500);
       leftDrive.setPower(0);
       rightDrive.setPower(0);
-      sleep(0);
-      leftDrive.setPower(0);
-      rightDrive.setPower(0);
-      sleep(0);
-      leftDrive.setPower(0);
-      rightDrive.setPower(0);
-      sleep(0);
+      sleep(100);
+      leftDrive.setPower(1);
+      rightDrive.setPower(1);
+      sleep(750);
       // Fire balls
       autoLaunchTimer.reset();
       while (opModeIsActive() && autoLaunchTimer.milliseconds() < 10000) {
