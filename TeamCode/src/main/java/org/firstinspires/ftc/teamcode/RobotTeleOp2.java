@@ -72,15 +72,7 @@ public class RobotTeleOp2 extends OpMode {
             if (gamepad2.b) {
                 launcher.loadBall();
             }
-        // these are manual test methods to assist with tuning the target launch motor velocity at measured distances
-        if (gamepad2.leftStickButtonWasPressed()) {
 
-            //launcher.incrementLaunchSpeed();
-            launcher.startLauncher();
-        } else if (gamepad2.rightStickButtonWasPressed()) {
-            //launcher.decrementLaunchSpeed();
-            launcher.stopLauncher();
-        }
         //launcher.setMotorVelocity();
 
         // update launcher state machine

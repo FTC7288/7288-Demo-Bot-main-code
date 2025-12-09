@@ -5,6 +5,7 @@ import static java.lang.Thread.sleep;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -26,8 +27,8 @@ public class Launcher {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1600;
-    final double LAUNCHER_MIN_VELOCITY = 1500;
+    final double LAUNCHER_TARGET_VELOCITY = 800;
+    final double LAUNCHER_MIN_VELOCITY = 700;
 
     private final double STOP_SPEED = 0.0; //We send this power to the servos when we want them to stop.
     //private final double FULL_SPEED = 1.0;
@@ -73,6 +74,9 @@ public class Launcher {
 
         upperLaunch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         lowerLaunch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        upperLaunch.setDirection(DcMotorSimple.Direction.REVERSE);
+        lowerLaunch.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         // TODO: tets to see if this makes a difference
