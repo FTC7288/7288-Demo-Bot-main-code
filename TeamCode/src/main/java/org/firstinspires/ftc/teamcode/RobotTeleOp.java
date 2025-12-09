@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 
 @TeleOp
 public class RobotTeleOp extends OpMode {
-//This is a change
+
     MecanumDrive drive = new MecanumDrive();
     Launcher launcher = new Launcher();
     Intake intake = new Intake();
@@ -30,17 +30,17 @@ public class RobotTeleOp extends OpMode {
 
         // The user has control of the speed of launcher motor without automatically
         // queuing a shot.
-        if (gamepad1.yWasPressed()) {
+        if (gamepad2.leftStickButtonWasPressed()) {
             launcher.startLauncher();
         }
-        else if (gamepad1.bWasPressed()) {
+        else if (gamepad2.rightStickButtonWasPressed()) {
             launcher.stopLauncher();
         }
 
         //For Intake (test if same buttons works)
-        if (gamepad2.aWasPressed()) {
+        if (gamepad2.a) {
             intake.startIntake();
-        } else if (gamepad2.xWasPressed()) {
+        } else if (gamepad2.x) {
             intake.stopIntake();
         }
 

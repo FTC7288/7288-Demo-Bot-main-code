@@ -11,15 +11,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Launcher {
-    private final int FEED_TIME_MILLISECONDS = 200; //The feeder servo runs this long when a shot is requested.
+    private final int FEED_TIME_MILLISECONDS = 500; //The feeder servo runs this long when a shot is requested.
     private final double FEED_START_POSITION = 0.0; // nominally 0 degrees, may need to be tuned based on mounting angle of servo
-    private final double FEED_POSITION = 0.25; // nominally 90 degrees, may need to increase it slightly
+    private final double FEED_POSITION = 0.55; // nominally 90 degrees, may need to increase it slightly
 
     private DcMotorEx lowerLaunch, upperLaunch;
     private Servo launchFeeder;
 
-    private int _launchSpeed = 0; // Commanded launch motor velocity
-
+    //private int _launchSpeed = 0; // Commanded launch motor velocity
 
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
@@ -27,14 +26,11 @@ public class Launcher {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1125;
-    final double LAUNCHER_MIN_VELOCITY = 1075;
-
+    final double LAUNCHER_TARGET_VELOCITY = 1600;
+    final double LAUNCHER_MIN_VELOCITY = 1500;
 
     private final double STOP_SPEED = 0.0; //We send this power to the servos when we want them to stop.
-    private final double FULL_SPEED = 1.0;
-
-
+    //private final double FULL_SPEED = 1.0;
 
     ElapsedTime feederTimer = new ElapsedTime();
 
@@ -72,14 +68,11 @@ public class Launcher {
         // Set launcher motor to RUN_USING_ENCODER and BRAKE to slow down faster than coasting.
 
         // TODO: add these back in with full battery to test if they work (or at leats do not break anything)
-        // upperLaunch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        // lowerLaunch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         upperLaunch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lowerLaunch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        upperLaunch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lowerLaunch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        upperLaunch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        lowerLaunch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
 
         // TODO: tets to see if this makes a difference
@@ -91,11 +84,12 @@ public class Launcher {
 */
 
         // Set left feeder servo to reverse so both servos work to feed ball into robot.
-        launchFeeder.setDirection(Servo.Direction.REVERSE);
+        //launchFeeder.setDirection(Servo.Direction.REVERSE);
         resetFeeder(); // default it to "0" degrees
 
         // Set initial state of launcher to IDLE.
         launchState = LaunchState.IDLE;
+        //stopFeeder();
         stopLauncher();
     }
 
@@ -105,7 +99,7 @@ public class Launcher {
         launchFeeder.setPosition(FEED_START_POSITION);
     }
 
-    private boolean _triggerActive;
+/*    private boolean _triggerActive;
     public boolean getTriggerActive() {
         return _triggerActive;
     }
@@ -132,21 +126,23 @@ public class Launcher {
             }
         }).start();
     }
+*/
+    /*
 
-
-    /// Manual control function to increase launch speed by 100
-    /// Used for testing and calibration
+    // Manual control function to increase launch speed by 100
+    // Used for testing and calibration
     public void incrementLaunchSpeed() {
         _launchSpeed = _launchSpeed+100;
     }
 
-    /// Manual control function to decrease launch speed by 100
-    /// Used for testing and calibration
+    // Manual control function to decrease launch speed by 100
+    // Used for testing and calibration
     public void decrementLaunchSpeed() {
         _launchSpeed = _launchSpeed-100;
     }
-
-    /// Sets both upper and lower launch motors to the same _launchSpeed
+*/
+    /*
+    // Sets both upper and lower launch motors to the same _launchSpeed
     public void setMotorVelocity() {
         lowerLaunch.setVelocity(_launchSpeed);
         upperLaunch.setVelocity(_launchSpeed);
@@ -157,10 +153,11 @@ public class Launcher {
         _launchSpeed = 0;
         setMotorVelocity();
     }
-
+*/
     ///  Returns the commanded _launchSpeed
-    public int getTargetLaunchSpeed() {
-        return _launchSpeed;
+    public double getTargetLaunchSpeed() {
+        return LAUNCHER_TARGET_VELOCITY;
+                //_launchSpeed;
     }
 
     /// Returns the measured upper launch motor velocity
@@ -190,21 +187,23 @@ public class Launcher {
     }
 
     public void stopLauncher () {
-        _launchSpeed = 0;
-        setMotorVelocity();
+  //      _launchSpeed = 0;
+  //      setMotorVelocity();
 
-       /* stopFeeder();
+        //stopFeeder();
         upperLaunch.setVelocity(STOP_SPEED);
         lowerLaunch.setVelocity(STOP_SPEED);
-        launchState = LaunchState.IDLE;*/
+        launchState = LaunchState.IDLE;
     }
 
     public void updateState () {
-       /* switch (launchState) {
+       switch (launchState) {
             case IDLE:
                 break;
             case SPIN_UP:
+                //feederTimer.reset();
                 upperLaunch.setVelocity(LAUNCHER_TARGET_VELOCITY);
+                lowerLaunch.setVelocity(LAUNCHER_TARGET_VELOCITY);
                 if ((upperLaunch.getVelocity() > LAUNCHER_MIN_VELOCITY) &&
                         (lowerLaunch.getVelocity() > LAUNCHER_MIN_VELOCITY)){
                     // transition states
@@ -212,18 +211,68 @@ public class Launcher {
                 }
                 break;
             case LAUNCH:
-                //launchFeeder.setPower(FULL_SPEED);
+                launchFeeder.setPosition(FEED_POSITION);
                 feederTimer.reset();
                 // transition state
                 launchState = LaunchState.LAUNCHING;
                 break;
             case LAUNCHING:
-                if (feederTimer.seconds() > FEED_TIME_SECONDS) {
-                    stopFeeder();
+                if (feederTimer.milliseconds() > FEED_TIME_MILLISECONDS) {
+                    resetFeeder();
                     // transition state
                     launchState = LaunchState.IDLE;
                 }
                 break;
-        }*/
+        }
     }
+/*
+    public void launchMotorOn () {
+        upperLaunch.setPower(0.05);
+        lowerLaunch.setPower(0.05);
+    }
+
+    public void launchMotorOff () {
+        upperLaunch.setPower(0);
+        lowerLaunch.setPower(0);
+    }
+
+ */
+    public void loadBall () {
+        launchFeeder.setPosition(FEED_POSITION);
+        /*try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        stopFeeder();*/
+    }
+
+
+/*
+    public void startLauncher(){
+        if (launchState == LaunchState.IDLE) {
+            // transition states
+            launchState = LaunchState.SPIN_UP;
+        }
+    }
+
+    public void stopLauncher () {
+        stopFeeder();
+        upperLaunch.setVelocity(STOP_SPEED);
+        lowerLaunch.setVelocity(STOP_SPEED);
+        launchState = LaunchState.IDLE;
+    }
+
+    public String getState() {
+        return launchState.toString();
+    }
+
+    public double getUpperVelocity() {
+        return upperLaunch.getVelocity();
+    }
+
+    public double getLowerVelocity() {
+        return lowerLaunch.getVelocity();
+    }*/
+
 }

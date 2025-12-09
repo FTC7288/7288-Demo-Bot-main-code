@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -46,8 +45,8 @@ public class MecanumDrive {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the game to start (driver presses START)
-        telemetry.addData("Status", "Mecanum Drive Initialized");
-        telemetry.update();
+        //telemetry.addData("Status", "Mecanum Drive Initialized");
+        //telemetry.update();
     }
 
     public void drive(double axial, double lateral, double yaw) {
@@ -82,9 +81,9 @@ public class MecanumDrive {
         backRightDrive.setPower(backRightPower);
 
         // Show the elapsed game time and wheel power.
-        telemetry.addData("Status","Run Time: "+runtime.toString());
-        telemetry.addData("Front left/Right","%4.2f, %4.2f",frontLeftPower,frontRightPower);
-        telemetry.addData("Back  left/Right","%4.2f, %4.2f",backLeftPower,backRightPower);
-        telemetry.update();
+        //telemetry.addData("Status","Run Time: "+runtime.toString());
+        //telemetry.addData("Front left/Right","%4.2f, %4.2f",frontLeftPower,frontRightPower);
+        //telemetry.addData("Back  left/Right","%4.2f, %4.2f",backLeftPower,backRightPower);
+        //telemetry.update();
     }
 }
