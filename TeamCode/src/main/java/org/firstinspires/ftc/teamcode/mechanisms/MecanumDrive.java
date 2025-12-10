@@ -15,6 +15,8 @@ public class MecanumDrive {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+
+    // TODO: likely change this back to 1
     private final double SPIN_DAMPING = 2.0;   // higher means slower turning
 
     public void init(HardwareMap hwMap) {
@@ -86,5 +88,29 @@ public class MecanumDrive {
         //telemetry.addData("Front left/Right","%4.2f, %4.2f",frontLeftPower,frontRightPower);
         //telemetry.addData("Back  left/Right","%4.2f, %4.2f",backLeftPower,backRightPower);
         //telemetry.update();
+    }
+
+    public void testWheelDirection(boolean front_left, boolean front_right, boolean back_left, boolean back_right) {
+
+        // This is test code:
+        //
+        // Each button should make the corresponding motor run FORWARD.
+        //   1) First get all the motors to take to correct positions on the robot
+        //      by adjusting your Robot Configuration if necessary.
+        //   2) Then make sure they run in the correct direction by modifying the
+        //      the setDirection() calls above.
+
+
+        double frontLeftPower  = front_left ? 1.0 : 0.0; // X gamepad
+        double frontRightPower = front_right ? 1.0 : 0.0; // A gamepad
+        double backLeftPower   = back_left ? 1.0 : 0.0; // Y gamepad
+        double backRightPower  = back_right ? 1.0 : 0.0; // B gamepad
+
+
+        // Send calculated power to wheels
+        frontLeftDrive.setPower(frontLeftPower);
+        frontRightDrive.setPower(frontRightPower);
+        backLeftDrive.setPower(backLeftPower);
+        backRightDrive.setPower(backRightPower);
     }
 }
