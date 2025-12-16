@@ -179,7 +179,7 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
   private void BANK_SHOT_AUTO() {
     ((DcMotorEx) flywheel).setVelocity(bankVelocity);
     if (((DcMotorEx) flywheel).getVelocity() >= bankVelocity - 100) {
-      coreHex.setPower(0.95);
+      coreHex.setPower(1);
     } else {
       coreHex.setPower(0);
     }
