@@ -17,8 +17,9 @@ public class WebcamTestOpMode  extends OpMode {
     Launcher launcher = new Launcher();
     MecanumDrive drive = new MecanumDrive();
     Intake intake = new Intake();
+    TurretServo turret = new TurretServo();
+    int numMissingTagReads = 0;
 
-   // TurretServo turret = new TurretServo();
 
     @Override
     public void init() {
@@ -26,6 +27,7 @@ public class WebcamTestOpMode  extends OpMode {
         launcher.init(hardwareMap);
         drive.init(hardwareMap);
         intake.init(hardwareMap);
+        turret.init(hardwareMap);
        // turret.init(hardwareMap);
     }
 
@@ -37,18 +39,22 @@ public class WebcamTestOpMode  extends OpMode {
         aprilTagWebcam.displayDetectionTelemetry(id585);
         // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#20)
         if (id585 != null) {
-            double angleToTag = id585.ftcPose.yaw;
-            //turret.changeTurretByDegrees(angleToTag);
+            numMissingTagReads = 0;
+            double angleToTag = id585.ftcPose.bearing;
+            turret.changeTurretByDegrees(angleToTag);
 
             double distanceToGoalCM = id585.ftcPose.range;
             launcher.setMotorVelocityForDistance(distanceToGoalCM);
             // NOTE: use this after distance vs speed has been measured and calibrated
             //launcher.setMotorVelocityForDistance(distanceToGoalCM);
+        } else if (numMissingTagReads < 20){
+            numMissingTagReads++;
         } else {
             // if we can't see the target/            // default back to neutral/default
             //turret.resetTurret();
             // and turn launch motors off
             launcher.stopLauncher();
+            turret.resetTurret();
         }
 
         // these are manual test methods to assist with tuning the target launch motor velocity at measured distances
@@ -83,6 +89,12 @@ public class WebcamTestOpMode  extends OpMode {
             launcher.decrementLaunchSpeed();
         }
 
+        if (gamepad2.xWasPressed()) {
+            turret.incrementTurretPosition();
+        } else if (gamepad2.yWasPressed()) {
+            turret.decrementTurretPosition();
+        }
+
         //For Intake (test if same buttons works)
         if (gamepad1.right_trigger !=0 ) {
             intake.startIntake();
@@ -110,7 +122,8 @@ public class WebcamTestOpMode  extends OpMode {
         telemetry.addLine("Target Velocity: " + launcher.getTargetLaunchSpeed());
         telemetry.addLine("Lower Velocity: " + launcher.getLowerVelocity());
         telemetry.addLine("Upper Velocity: " + launcher.getUpperVelocity());
-        telemetry.addData("State", launcher.getState());
-
+        telemetry.addData("State ", launcher.getState());
+        String turretPositionStr = String.format("%.2f",turret.getCurrentPosition());
+        telemetry.addLine("Turret Position " + turretPositionStr);
     }
 }
