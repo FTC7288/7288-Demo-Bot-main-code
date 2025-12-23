@@ -15,17 +15,26 @@ public class LEDIndicator {
     }
 
     public void incrementLEDValue() {
-        currentLEDValue = currentLEDValue + .1;
+        currentLEDValue = currentLEDValue + .05;
         turretServo.setPosition(currentLEDValue);
     }
 
     public void decrementLEDValue() {
-        currentLEDValue = currentLEDValue - .1;
+        currentLEDValue = currentLEDValue - .05;
         turretServo.setPosition(currentLEDValue);
     }
 
     public double getLEDValue(){
         return currentLEDValue;
     }
+
+    /* SERVO POSITIONS TO COLORS
+
+        .50 = GREEN
+        .30 = RED (maybe tune a little redder if we want)
+        .60 = BLUE
+
+         */
+
 
 }
