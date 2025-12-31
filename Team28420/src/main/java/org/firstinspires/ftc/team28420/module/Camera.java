@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.team28420.types.AprilTag;
 import org.firstinspires.ftc.team28420.types.MovementParams;
 import org.firstinspires.ftc.team28420.types.PolarVector;
@@ -12,76 +14,83 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Camera {
 
     private final AprilTagProcessor aprilTag;
     private final VisionPortal visionPortal;
 
-    private MovementParams savedParams = new MovementParams(new PolarVector(0, 0), 0);
+    private List<AprilTagDetection> lastDetections = new ArrayList<>();
 
-    public Camera(WebcamName webcamName) {
-        aprilTag = AprilTagProcessor.easyCreateWithDefaults();
-        visionPortal = VisionPortal.easyCreateWithDefaults(webcamName, aprilTag);
+    public Camera(WebcamName webcamName) throws InterruptedException {
+        aprilTag = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagOutline(true)
+                .build();
+
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(webcamName)
+                .addProcessor(aprilTag)
+                .enableLiveView(true)
+                .setAutoStopLiveView(true)
+                .build();
+
+        while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            Thread.sleep(20);
+        }
+
+        ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+        exposureControl.setMode(ExposureControl.Mode.Manual);
+        exposureControl.setExposure(5, TimeUnit.MILLISECONDS);
+
+        GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+        gainControl.setGain(250);
 
         FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
     }
 
-    private List<AprilTagDetection> getDetections() {
-        return aprilTag.getDetections();
-    }
-
-    private PolarVector getVectorToPoint(double x, double y) {
-        double y0 = y - Config.CameraConf.RANGE_TO_TAG;
-
-        double theta = Math.atan2(y0, x);
-        double abs = Math.hypot(x, y0) / 50;
-        Config.Etc.telemetry.addData("abs", abs);
-        return new PolarVector(theta, abs > 1 ? 1 : abs);
-    }
-
-    private PolarVector getVectorToPointWithFix(double x, double y, double bearing) {
-        double y0 = y - Config.CameraConf.RANGE_TO_TAG;
-        
-        double cosB = Math.cos(-bearing);
-        double sinB = Math.sin(-bearing);
-        double xRotated = x * cosB - y0 * sinB;
-        double yRotated = x * sinB + y0 * cosB;
-
-        double theta = Math.atan2(xRotated, yRotated);
-        double abs = Math.hypot(xRotated, yRotated) / 50;
-        Config.Etc.telemetry.addData("abs", abs);
+    private PolarVector getVectorToPoint(double x, double y, double x0, double y0) {
+        double theta = Math.atan2(y - y0, x - x0);
+        double abs = Math.hypot(x - x0, y - y0) / 100;
         return new PolarVector(theta, abs > 1 ? 1 : abs);
     }
 
     private double getRotateForce(double angle) {
-        return angle / Config.CameraConf.ANGLE_MAX_VELOCITY;
+        return angle / Config.CameraConf.ANGLE_MAX_VELOCITY * 0.5;
+    }
+
+    public MovementParams getMovementParamsToPoint(AprilTagDetection detection, double offsetX, double offsetY) {
+        if (detection == null) {
+            return new MovementParams(new PolarVector(0, 0), 0);
+        }
+        PolarVector vector = getVectorToPoint(detection.ftcPose.x, detection.ftcPose.y, offsetX, offsetY);
+        double rotateForce = getRotateForce(Math.toRadians(-detection.ftcPose.yaw));
+        return new MovementParams(vector, rotateForce);
+    }
+
+    public AprilTagDetection getAprilTagDetection(AprilTag tag) {
+        for (AprilTagDetection detection : lastDetections) {
+            if (AprilTag.fromId(detection.id) == tag) {
+                return detection;
+            }
+        }
+        return null;
     }
 
     public void updateApriltags() {
-        for (AprilTagDetection detection : getDetections()) {
-            if (AprilTag.fromId(detection.id) == AprilTag.RED) {
-                savedParams = new MovementParams(getVectorToPointWithFix(detection.ftcPose.x, detection.ftcPose.y, Math.toRadians(-detection.ftcPose.bearing)), getRotateForce(Math.toRadians(-detection.ftcPose.bearing)));
-            }
-            else {
-                savedParams = new MovementParams(new PolarVector(0, 0), 0);
-            }
-        }
-    }
-
-    public MovementParams getSavedParams() {
-        return savedParams;
+        lastDetections = aprilTag.getDetections();
     }
 
     public void log(Telemetry telemetry) {
-        List<AprilTagDetection> detections = getDetections();
-
         telemetry.addLine("=== CAMERA ===");
-        telemetry.addData("# apriltags detected", detections.size());
+        telemetry.addData("# apriltags detected", lastDetections.size());
 
-        for (AprilTagDetection detection : detections) {
+        for (AprilTagDetection detection : lastDetections) {
             if (detection.metadata != null) {
                 telemetry.addLine(String.format(Locale.ROOT, "\n(ID: %d) %s", detection.id, detection.metadata.name));
                 telemetry.addLine(String.format(Locale.ROOT, "X %6.1f, Y %6.1f, Z %6.1f", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));

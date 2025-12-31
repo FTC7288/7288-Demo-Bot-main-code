@@ -6,11 +6,13 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.team28420.types.AprilTag;
 import org.firstinspires.ftc.team28420.types.MovementParams;
 import org.firstinspires.ftc.team28420.types.PolarVector;
 import org.firstinspires.ftc.team28420.types.Position;
 import org.firstinspires.ftc.team28420.types.WheelsRatio;
 import org.firstinspires.ftc.team28420.util.Config;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 public class Actions {
 
@@ -82,12 +84,13 @@ public class Actions {
 
     public WheelsRatio<Double> getRatios(double axisX, double axisY, double axisR) {
         return Movement.vectorToRatios(
-                PolarVector.fromPos(new Position(axisX, axisY)).rotate(-1 * cachedHeading - Math.PI / 2), axisR);
+                PolarVector.fromPos(new Position(axisX, axisY)).rotate(-1 * cachedHeading), axisR);
     }
 
-    public WheelsRatio<Double> getRatiosForApriltag() {
+    public WheelsRatio<Double> getRatiosForApriltag(AprilTag tag) {
         cam.updateApriltags();
-        MovementParams params = cam.getSavedParams();
+        AprilTagDetection detection = cam.getAprilTagDetection(AprilTag.RED);
+        MovementParams params = cam.getMovementParamsToPoint(detection, 0, Config.CameraConf.RANGE_TO_TAG);
         return Movement.vectorToRatios(params.getMoveVector(), params.getTurnAbs());
     }
 

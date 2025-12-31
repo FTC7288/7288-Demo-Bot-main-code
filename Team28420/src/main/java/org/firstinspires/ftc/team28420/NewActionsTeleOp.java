@@ -13,6 +13,7 @@ import org.firstinspires.ftc.team28420.module.Actions;
 import org.firstinspires.ftc.team28420.module.Camera;
 import org.firstinspires.ftc.team28420.module.Movement;
 import org.firstinspires.ftc.team28420.module.Shooter;
+import org.firstinspires.ftc.team28420.types.AprilTag;
 import org.firstinspires.ftc.team28420.util.Config;
 
 @TeleOp(name = "New Actions", group = "main")
@@ -20,7 +21,7 @@ public class NewActionsTeleOp extends LinearOpMode {
     private boolean dpad_active = false;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Config.Etc.telemetry = telemetry;
 
@@ -43,7 +44,7 @@ public class NewActionsTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (gamepad1.cross) {
-                act.move(act.getRatiosForApriltag());
+                act.move(act.getRatiosForApriltag(AprilTag.RED));
             }
             else {
                 act.move(
