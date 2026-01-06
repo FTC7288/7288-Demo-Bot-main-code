@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.TurretServo;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 @TeleOp
-public class RedTeleOp  extends OpMode {
+public class BlueTeleOp  extends OpMode {
     AprilTagsWebcam aprilTagWebcam = new AprilTagsWebcam();
     Launcher launcher = new Launcher();
     MecanumDrive drive = new MecanumDrive();
@@ -38,7 +38,7 @@ public class RedTeleOp  extends OpMode {
     public void loop() {
         //Update the vision portal
         aprilTagWebcam.update();
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24); // TAG ID 24 is the red goal
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(20); // TAG ID 20 is the blue goal
         aprilTagWebcam.displayDetectionTelemetry(id24);
         // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#20)
         if (id24 != null) {
