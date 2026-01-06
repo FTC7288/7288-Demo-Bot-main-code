@@ -62,6 +62,10 @@ public final class constants {
     public static final class FIELD{
         public static final double FIELD_SIZE = 3.6576;
         public static final double FIELD_HALF = 3.6576/2;
+        //Targets are in M also 67
+        public static final double shoottargetx = -1.6256;
+        public static final double shoottargetyred = 1.524;
+        public static final double shoottargetyblue = -1.524;
 
         public static final double mtoin = 39.370787;
     }

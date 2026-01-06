@@ -4,9 +4,16 @@ import static org.firstinspires.ftc.teamcode.NonOpModes.colorsensing.ColorSensin
 import static org.firstinspires.ftc.teamcode.Util.Enum.Balls.unknown;
 import static org.firstinspires.ftc.teamcode.Util.RobotPosition.TeamColorRED;
 import static org.firstinspires.ftc.teamcode.Util.RobotPosition.getRobotCoordinates;
+import static org.firstinspires.ftc.teamcode.Util.constants.FIELD.shoottargetx;
+import static org.firstinspires.ftc.teamcode.Util.constants.FIELD.shoottargetyblue;
+import static org.firstinspires.ftc.teamcode.Util.constants.FIELD.shoottargetyred;
 import static org.firstinspires.ftc.teamcode.launcher.AutoFirePower.autoLaunch;
 import static org.firstinspires.ftc.teamcode.limelight.LimelightPosSetting.limelightposupdate;
+import static java.lang.Math.atan2;
 
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -18,11 +25,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Util.Enum.Balls;
+import org.firstinspires.ftc.teamcode.Util.RobotPosition;
 import org.firstinspires.ftc.teamcode.positioning.odometry.FieldOrientedDriving;
-//uwu
 
 
-public class BaseOpMode extends LinearOpMode {
+public class BaseOpModeAutoAimCrosby extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime rapidtime = new ElapsedTime();
@@ -269,6 +276,37 @@ public class BaseOpMode extends LinearOpMode {
             if (gamepad1.left_bumper) Scooper.setVelocity(999, AngleUnit.RADIANS);
             else if (gamepad1.right_bumper) Scooper.setVelocity(-999, AngleUnit.RADIANS);
             else Scooper.setVelocity(0, AngleUnit.RADIANS);
+
+            if (gamepad2.right_stick_button){
+
+                double[] robotcoordinates = RobotPosition.getRobotCoordinates();
+                Pose2d startPose = new Pose2d(robotcoordinates[0],robotcoordinates[1],robotcoordinates[5]);
+                MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
+                double arctanintermediatex = robotcoordinates[0]-shoottargetx;
+                double arctanintermediatey = 67;
+                double usedy;
+                if (TeamColorRED) usedy = shoottargetyred;
+                else usedy = shoottargetyblue;
+                arctanintermediatey = usedy - robotcoordinates[1];
+
+
+                double robotautoaimtargetangle = atan2(arctanintermediatey, arctanintermediatex);
+
+                telemetry.addData("robat aurot aim target angle", robotautoaimtargetangle);
+
+                //setrobot angle to robot auto aim tareet
+                Action rotatetotargetangle = drive.actionBuilder(startPose)
+                        .turnTo(robotautoaimtargetangle)
+                        .build();
+                Actions.runBlocking(rotatetotargetangle);
+
+
+
+
+
+            }
+
+
             pinpoint.update();
 
             telemetry.addLine("All Speeds are in Jacks Per Second");
