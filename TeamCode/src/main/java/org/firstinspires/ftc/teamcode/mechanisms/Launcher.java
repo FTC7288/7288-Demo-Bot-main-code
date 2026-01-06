@@ -157,7 +157,7 @@ public class Launcher {
 
     public void setMotorVelocityForDistance(double rangeinCm) {
         // TODO: calculate appropriate motor velocity based on range
-        _launchSpeed = (int)(10*rangeinCm/3+800);
+        _launchSpeed = (int)(10*rangeinCm/4+700);
         setMotorVelocity();
     }
 

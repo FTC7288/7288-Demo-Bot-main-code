@@ -130,5 +130,14 @@ public class WebcamTestOpMode  extends OpMode {
         telemetry.addData("State: ", launcher.getState());
         String turretPositionStr = String.format("%.2f",turret.getCurrentPosition());
         telemetry.addLine("Turret Position: " + turretPositionStr);
+        /*
+        String leftStickX = String.format("%.2f",gamepad1.left_stick_x);
+        telemetry.addLine("Left Stick X:" + leftStickX);
+        String leftStickY = String.format("%.2f",gamepad1.left_stick_y);
+        telemetry.addLine("Left Stick X:" + leftStickY);
+        String rightStickX = String.format("%.2f",gamepad1.right_stick_x);
+        telemetry.addLine("Left Stick X:" + rightStickX);
+        */
+
     }
 }
