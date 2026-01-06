@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+/*package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Util.Motion;
 import org.firstinspires.ftc.teamcode.Util.RPMEstimator;
 import org.firstinspires.ftc.teamcode.NonOpModes.colorsensing.ColorSensingFunctions;
 
-import static org.firstinspires.ftc.teamcode.Util.constants.RobotStats.*;
+import static org.firstinspires.ftc.teamcode.Util.constants.RobotStats.*;*/
 
 /** TODO: implement a way to tell where to hit the gate and where to do so
  *        implement a way to park near end of auto
@@ -33,6 +33,7 @@ import static org.firstinspires.ftc.teamcode.Util.constants.RobotStats.*;
  *        make it get more balls after shooting the three it has
  *        make it shoot the balls in the desired pattern instead of just in order*/
 
+/*
 @Autonomous(name="AutoOdomBased", group="Auto")
 public class AutoOdomBased extends LinearOpMode {
 
@@ -375,4 +376,4 @@ public class AutoOdomBased extends LinearOpMode {
 
     private boolean isAtTargetRPM(double targetRPM) {
         return Math.abs(getCurrentRPM() - targetRPM) <= 5.0; // {check} Tolerance might need adjustment
-    }
+    }*/
