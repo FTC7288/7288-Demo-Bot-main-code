@@ -51,6 +51,8 @@ public class BaseOpModeAutoAimCrosby extends LinearOpMode {
 
         double[] firingpositions = {.1,.42,.76};
 
+        boolean autoAimLast = false;
+
         double[] drumlocations = {.27,.6,.92};
         Balls[] drumBallColors = {unknown, unknown, unknown};
         double targetdrumangle = .27;
@@ -277,14 +279,21 @@ public class BaseOpModeAutoAimCrosby extends LinearOpMode {
             else if (gamepad1.right_bumper) Scooper.setVelocity(-999, AngleUnit.RADIANS);
             else Scooper.setVelocity(0, AngleUnit.RADIANS);
 
-            if (gamepad2.right_stick_button){
+
+            boolean autoAimPressed = gamepad2.right_stick_button && !autoAimLast;
+            autoAimLast = gamepad2.right_stick_button;
+
+            if (autoAimLast){
 
                 double[] robotcoordinates = RobotPosition.getRobotCoordinates();
-                Pose2d startPose = new Pose2d(robotcoordinates[0],robotcoordinates[1],robotcoordinates[5]);
+                double angleinradians = (robotcoordinates[5] * 3.1415926535)/180;
+                Pose2d startPose = new Pose2d(robotcoordinates[0],robotcoordinates[1],angleinradians);
+
                 MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
-                double arctanintermediatex = robotcoordinates[0]-shoottargetx;
-                double arctanintermediatey = 67;
+                double arctanintermediatex = shoottargetx-robotcoordinates[0];
+                double arctanintermediatey;
                 double usedy;
+
                 if (TeamColorRED) usedy = shoottargetyred;
                 else usedy = shoottargetyblue;
                 arctanintermediatey = usedy - robotcoordinates[1];
@@ -293,8 +302,10 @@ public class BaseOpModeAutoAimCrosby extends LinearOpMode {
                 double robotautoaimtargetangle = atan2(arctanintermediatey, arctanintermediatex);
 
                 telemetry.addData("robat aurot aim target angle", robotautoaimtargetangle);
+                telemetry.update();
 
                 //setrobot angle to robot auto aim tareet
+                //while (robotcoordinates[5] - robotautoaimtargetangle < 1)
                 Action rotatetotargetangle = drive.actionBuilder(startPose)
                         .turnTo(robotautoaimtargetangle)
                         .build();
