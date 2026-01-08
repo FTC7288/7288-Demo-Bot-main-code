@@ -31,7 +31,7 @@ public class MecanumDrive {
     private DcMotor backRightDrive = null;
 
     // TODO: likely change this back to 1
-    private final double SPIN_DAMPING = 2.0;   // higher means slower turning
+    private final double SPIN_DAMPING = 1.0;   // higher means slower turning
 
     public void init(HardwareMap hwMap) {
 

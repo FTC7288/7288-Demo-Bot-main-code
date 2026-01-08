@@ -69,9 +69,14 @@ public class Launcher {
 
         // Set launcher motor to RUN_USING_ENCODER and BRAKE to slow down faster than coasting.
 
+        PIDFCoefficients pidf = new PIDFCoefficients(300, 0, 0.001, 10);
+
         // TODO: add these back in with full battery to test if they work (or at leats do not break anything)
         upperLaunch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lowerLaunch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        upperLaunch.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        lowerLaunch.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
 
         upperLaunch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         lowerLaunch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
