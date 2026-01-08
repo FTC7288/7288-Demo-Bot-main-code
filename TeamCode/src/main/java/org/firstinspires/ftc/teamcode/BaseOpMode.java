@@ -156,7 +156,7 @@ public class BaseOpMode extends LinearOpMode {
             //auto rangeing commands
             motortargetspeedradians = autoLaunch();
             if (gamepad2.left_trigger >= 0.3) {
-                motortargetspeedradians = 0;
+                motortargetspeedradians = -1;
             }
             // sets the velocity of the motors
             LauncherFL.setVelocity(-motortargetspeedradians, AngleUnit.RADIANS);

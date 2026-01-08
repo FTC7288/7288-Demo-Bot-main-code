@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public abstract class AutoFirePower extends LinearOpMode {
     static ElapsedTime timer = new ElapsedTime();
 
-    public static double firingpowermultiplierconst = 1.6;
+    public static double firingpowermultiplierconst = 1.05;
     public static double firingpoweraddingconst = 1.7;
     public static void initializeLauncher(DcMotorEx LauncherFL,DcMotorEx LauncherFR) {
 
