@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Util;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /** (import static org.firstinspires.ftc.teamcode.Util.constants.*;)
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * and then you can use any variable you need in the subset
  * (EX: MAX_POWER)
 */
+@Config
 public final class constants {
     /**
      * hardware map names
@@ -62,10 +64,12 @@ public final class constants {
     public static final class FIELD{
         public static final double FIELD_SIZE = 3.6576;
         public static final double FIELD_HALF = 3.6576/2;
-        //Targets are in M also 67
+        public static final double predictedmotifx = -FIELD_HALF * 1.05;
+        public static final double predictedmotify = 0;
+        //Targets are in Meters
         public static final double shoottargetx = -1.6256;
-        public static final double shoottargetyred = 1.524;
-        public static final double shoottargetyblue = -1.524;
+        public static final double shoottargetyred = 1.7256;
+        public static final double shoottargetyblue = -2.0256;
 
         public static final double mtoin = 39.370787;
     }

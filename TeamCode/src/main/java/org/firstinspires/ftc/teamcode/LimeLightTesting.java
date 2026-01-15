@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import java.util.List;
 
 @Autonomous(name="LimeLightTesting", group="limelight")
-//@Disabled
+//
 // the disabled will make it not show up under the driver station OPmode list
 // useful to prevent cluttering after testing
 public class LimeLightTesting extends LinearOpMode {

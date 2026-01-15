@@ -46,7 +46,7 @@ public class NineBallAuto extends LinearOpMode {
     public static double ballpickupy = 60;
 
     public static double loadonex = 0;
-    public static double loadtwox = 16;
+    public static double loadtwox = 24;
     public static double loadthreex = 30;
 
     protected boolean isred;

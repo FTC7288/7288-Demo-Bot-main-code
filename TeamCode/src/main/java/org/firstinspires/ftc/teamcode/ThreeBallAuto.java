@@ -126,10 +126,13 @@ public class ThreeBallAuto extends LinearOpMode {
         splineLaunchPos(drive,startPose,firingangle*mirrory,mirrory);
         startPose = drive.localizer.getPose();
 
+
+
         telemetry.addLine("moving to first load");
         telemetry.addData("x" , startPose.position.x);
         telemetry.addData("y", startPose.position.y);
         telemetry.update();
+
 
 
 

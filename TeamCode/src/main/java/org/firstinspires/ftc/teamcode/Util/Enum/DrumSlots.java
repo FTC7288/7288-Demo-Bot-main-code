@@ -10,6 +10,11 @@ public enum DrumSlots {
 
     private Balls loadedBall;
 
+    public void autoDrumSlotInit(){
+        SLOT_0.setLoadedBall(Balls.green);
+        SLOT_1.setLoadedBall(Balls.purple);
+        SLOT_2.setLoadedBall(Balls.purple);
+    }
 
     DrumSlots(double loadPosition, double shootPosition, Balls initialBall) {
         this.loadPosition = loadPosition;

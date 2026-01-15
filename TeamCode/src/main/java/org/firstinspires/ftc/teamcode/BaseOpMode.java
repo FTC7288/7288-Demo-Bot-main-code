@@ -161,7 +161,7 @@ public class BaseOpMode extends LinearOpMode {
             // sets the velocity of the motors
             LauncherFL.setVelocity(-motortargetspeedradians, AngleUnit.RADIANS);
             currentleftmotorvelocity = LauncherFL.getVelocity(AngleUnit.RADIANS);
-            if( Math.abs(currentleftmotorvelocity +motortargetspeedradians) < .02){
+            if( Math.abs(motortargetspeedradians-currentleftmotorvelocity ) < .02){
                 gamepad2.rumble( .75,.75,50);
             }
             if(gamepad1.a){
@@ -213,6 +213,8 @@ public class BaseOpMode extends LinearOpMode {
                     targetdrumslot++;
 
 
+                }else if (loadedcolor != unknown && targetdrumslot < 4 && timer.milliseconds() > 600){
+                    Scooper.setVelocity(999,AngleUnit.RADIANS);
                 }
             }
             else Scooper.setVelocity(0, AngleUnit.RADIANS);
