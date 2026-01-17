@@ -88,7 +88,7 @@ public class BlueAutoClose extends OpMode {
         {
             doAprilTag();
         }
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24);
+        AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
 
         switch (state) {
             case START_TIMER_FIRST_TIME:
@@ -105,7 +105,7 @@ public class BlueAutoClose extends OpMode {
                 }
                 break;
             case FIND_TAG:
-                if(id24 != null){
+                if(id20 != null){
                     state = State.SPIN_UP;
                 }
                 break;
@@ -204,7 +204,7 @@ public class BlueAutoClose extends OpMode {
                 }
                 break;
             case FIND_TAG_2:
-                if(id24 != null){
+                if(id20 != null){
                     state = State.SPIN_UP_2;
                 }
                 break;
@@ -226,7 +226,7 @@ public class BlueAutoClose extends OpMode {
                     launcher.resetFeeder();
                     Launcher.LaunchState = Launcher.LaunchState.IDLE;
                     launcher.stopLauncher();
-                    state = State.ROTATE_RIGHT_2;
+                    state = State.ROTATE_LEFT_2;
                     driveTimer.reset();
                 }
                 break;
@@ -360,7 +360,7 @@ public class BlueAutoClose extends OpMode {
     private void doAprilTag(){
         //Update the vision portal
         aprilTagWebcam.update();
-        AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20); // TAG ID 24 is the red goal
+        AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20); // TAG ID 20 is the blue goal
         aprilTagWebcam.displayDetectionTelemetry(id20);
         // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#20)
         if (id20 != null && id20.ftcPose != null) {
