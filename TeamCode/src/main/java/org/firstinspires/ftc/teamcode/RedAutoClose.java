@@ -257,7 +257,7 @@ public class RedAutoClose extends OpMode {
                     drive.drive(0,0,0);
                     driveTimer.reset();
                     state = State.MOVE_FORWARD_2;
-                                    }
+                }
                 break;
             case MOVE_FORWARD_2:
                 intake.startIntake();
@@ -357,7 +357,8 @@ public class RedAutoClose extends OpMode {
         }
 
     }
-    public void doAprilTag(){
+
+    private void doAprilTag(){
         //Update the vision portal
         aprilTagWebcam.update();
         AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24); // TAG ID 24 is the red goal
@@ -386,3 +387,4 @@ public class RedAutoClose extends OpMode {
         }
     }
 }
+

@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.TurretServo;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
+
 @Autonomous
 public class BlueAutoLong extends OpMode {
     MecanumDrive drive = new MecanumDrive();
@@ -40,7 +41,7 @@ public class BlueAutoLong extends OpMode {
         SPIN_UP_2,
         LAUNCHING_2,
         MOVE_FORWARD_4,
-        FINISHED,
+        FINISHED
     }
     State state = State.FIND_TAG;
     ElapsedTime driveTimer = new ElapsedTime();
@@ -60,6 +61,7 @@ public class BlueAutoLong extends OpMode {
     @Override
     public void loop() {
         telemetry.addData("Current state", state);
+        doAprilTag();
         AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(20);
 
         switch (state) {
@@ -105,54 +107,38 @@ public class BlueAutoLong extends OpMode {
             case FINISHED:
                 telemetry.addData("Current state", state);
                 break;
-
+            default:
 
         }
-                doAprilTag() ;
-            {
-            //Update the vision portal
-            aprilTagWebcam.update();
-            aprilTagWebcam.displayDetectionTelemetry(id24);
-            // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#20)
-            if (id24 != null && id24.ftcPose != null) {
-                numMissingTagReads = 0;
-                double angleToTag = id24.ftcPose.bearing;
-                turret.changeTurretByDegrees(angleToTag);
 
-                double distanceToGoalCM = id24.ftcPose.range;
-                launcher.setMotorVelocityForDistance(distanceToGoalCM);
-                led.setLEDGreen();
-                // NOTE: use this after distance vs speed has been measured and calibrated
-                //launcher.setMotorVelocityForDistance(distanceToGoalCM);
-            } else if (numMissingTagReads < 100) {
-                numMissingTagReads++;
-                led.setLEDBlue();
-            } else {
-                // if we can't see the target/            // default back to neutral/default
-                //turret.resetTurret();
-                // and turn launch motors off
-                launcher.stopLauncher();
-                turret.resetTurret();
-                led.setLEDRed();
-            }
-        }
     }
-
-    private void doAprilTag() {
+    private void doAprilTag(){
         //Update the vision portal
         aprilTagWebcam.update();
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24); // TAG ID 24 is the red goal
-        aprilTagWebcam.displayDetectionTelemetry(id24);
+        AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20); // TAG ID 20 is the blue goal
+        aprilTagWebcam.displayDetectionTelemetry(id20);
         // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#20)
-        if (id24 != null && id24.ftcPose != null) {
+        if (id20 != null && id20.ftcPose != null) {
             numMissingTagReads = 0;
-            double angleToTag = id24.ftcPose.bearing;
-            //turret.changeTurretByDegrees(angleToTag);
+            double angleToTag = id20.ftcPose.bearing;
+            turret.changeTurretByDegrees(angleToTag);
 
-            double distanceToGoalCM = id24.ftcPose.range;
+            double distanceToGoalCM = id20.ftcPose.range;
             launcher.setMotorVelocityForDistance(distanceToGoalCM);
             led.setLEDGreen();
             // NOTE: use this after distance vs speed has been measured and calibrated
             //launcher.setMotorVelocityForDistance(distanceToGoalCM);
+        } else if (numMissingTagReads < 100){
+            numMissingTagReads++;
+            led.setLEDBlue();
+        } else {
+            // if we can't see the target/            // default back to neutral/default
+            //turret.resetTurret();
+            // and turn launch motors off
+            launcher.stopLauncher();
+            turret.resetTurret();
+            led.setLEDRed();
         }
-    }}
+    }
+}
+
