@@ -1188,7 +1188,7 @@ class Circle extends OpMode {
         telemetryM.debug("So, make sure you have enough space to the left, front, and back to run the OpMode.");
         telemetryM.debug("It will also continuously face the center of the circle to test your heading and centripetal correction.");
         telemetryM.update(telemetry);
-        follower.update();hhh
+        follower.update();
         drawOnlyCurrent();
     }
 
