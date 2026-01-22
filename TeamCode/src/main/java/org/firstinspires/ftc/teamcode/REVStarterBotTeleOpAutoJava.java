@@ -128,9 +128,9 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
    */
   private void splitStickArcadeDrive() {
     // y = forward/backward, x = strafe left/right, rx = turn left/right
-    double y = -gamepad1.left_stick_y; // Remember: Y is reversed on the joystick
-    double x = gamepad1.left_stick_x * 1.1; // Counteract motor friction when strafing
-    double rx = gamepad1.right_stick_x;
+    double y = -gamepad1.left_stick_x; // Remember: Y is reversed on the joystick
+    double x = gamepad1.left_stick_y * 1.1; // Counteract motor friction when strafing
+    double rx = -gamepad1.right_stick_x;
 
     // Denominator is the largest motor power (absolute value) or 1
     // This ensures all powers maintain the same ratio, even if one is > 1
