@@ -5,7 +5,6 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -37,7 +36,7 @@ public class RedPedroPathingClose extends OpMode {
     private final Pose pickup1Pose = new Pose(125.17073170731707, 83.58536585365854, Math.toRadians(0)); // Pick up closest row of balls
 
     private Path startToLaunching;
-    private PathChain launchingToPickupReady1, pickupReady1ToPickup1, pickup1ToLaunching;
+    private PathChain launchingToPickupReady1, pickupReady1ToPickup1, pickup1ToLaunching, launchingToStart;
 
     public void buildPaths() {
 
@@ -60,14 +59,22 @@ public class RedPedroPathingClose extends OpMode {
                 .addPath(new BezierLine(pickup1Pose, launchingPose))
                 .setLinearHeadingInterpolation(pickup1Pose.getHeading(), launchingPose.getHeading())
                 .build();
+
+        launchingToStart =  follower.pathBuilder()
+                .addPath(new BezierLine(launchingPose, startPose))
+                .setLinearHeadingInterpolation(launchingPose.getHeading(), startPose.getHeading())
+                .build();
     }
 
     enum State {
         GO_TO_LAUNCH_1,
         FIND_TAG,
-        PREPARE_TO_INTAKE_POS_1,
+        SPIN_UP,
+        LAUNCHING,
+        PREPARE_TO_INTAKE_POSE_1,
         INTAKE_1,
         GO_TO_LAUNCH_2,
+        GO_BACK_TO_START_POSE,
         FINISHED
     }
 
@@ -87,6 +94,7 @@ public class RedPedroPathingClose extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
+        follower.setMaxPower(.65);
 
         state = State.GO_TO_LAUNCH_1;
     }
@@ -104,17 +112,50 @@ public class RedPedroPathingClose extends OpMode {
         telemetry.update();
 
         // if (in spin up, launch, find tag, etc
-        if (state == RedPedroPathingClose.State.FIND_TAG) {
+        if(state == State.FIND_TAG ||
+                state == State.SPIN_UP ||
+                state == State.LAUNCHING)
+        {
             doAprilTag();
         }
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24);
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(586);
 
         switch (state) {
             case GO_TO_LAUNCH_1:
+
+                //follower.setMaxPowerScaling(.25);
                 follower.followPath(startToLaunching);
-                state = State.PREPARE_TO_INTAKE_POS_1;
+                state = State.FIND_TAG;
                 break;
-            case PREPARE_TO_INTAKE_POS_1:
+            case FIND_TAG:
+                if(id24 != null){
+                    state = State.SPIN_UP;
+                }
+                break;
+            case SPIN_UP:
+                double speedError = launcher.getLaunchSpeedError();
+                double angleError = turret.getAngleError();
+                if (speedError < 50){
+                    state = State.LAUNCHING;
+                    driveTimer.reset();
+                }
+                break;
+            case LAUNCHING:
+                if (driveTimer.seconds() < 3) {
+                    intake.startIntake();
+                    launcher.loadBall();
+                }
+                else {
+                    intake.stopIntake();
+                    //launcher.setMotorVelocity();
+                    launcher.stopLauncher();
+                    launcher.resetFeeder();
+                    //Launcher.LaunchState = Launcher.LaunchState.IDLE;
+                    state = State.PREPARE_TO_INTAKE_POSE_1;
+                    driveTimer.reset();
+                }
+                break;
+            case PREPARE_TO_INTAKE_POSE_1:
                 if(!follower.isBusy()){
                     follower.followPath(launchingToPickupReady1);
                     state = State.INTAKE_1;
@@ -129,6 +170,12 @@ public class RedPedroPathingClose extends OpMode {
             case GO_TO_LAUNCH_2:
                 if(!follower.isBusy()){
                     follower.followPath(pickup1ToLaunching);
+                    state = State.GO_BACK_TO_START_POSE;
+                }
+                break;
+            case GO_BACK_TO_START_POSE:
+                if(!follower.isBusy()){
+                    follower.followPath(launchingToStart);
                     state = State.FINISHED;
                 }
                 break;
@@ -147,7 +194,7 @@ public class RedPedroPathingClose extends OpMode {
     private void doAprilTag() {
         //Update the vision portal
         aprilTagWebcam.update();
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24); // TAG ID 24 is the red goal
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(586); // TAG ID 24 is the red goal
         aprilTagWebcam.displayDetectionTelemetry(id24);
         // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#20)
         if (id24 != null && id24.ftcPose != null) {
