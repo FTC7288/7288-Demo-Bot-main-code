@@ -20,6 +20,8 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
   private static final int bankVelocity = 1050;
   private static final int farVelocity = 2200;
   private static final int maxVelocity = 2200;
+  private static final int shootVelocity = 1050;
+  int targetID = 20;
   private static final String TELEOP = "TELEOP";
   private static final String AUTO_BLUE_GOAL = "AUTO BLUE GOAL";
   private static final String AUTO_BLUE_BACK = "AUTO BLUE BACK";
@@ -133,7 +135,7 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
 
     // Check if the button is currently being HELD
     if (gamepad1.circle) {
-      int targetID = 20;
+
       // Get the specific tag from webcam helper class
       org.firstinspires.ftc.vision.apriltag.AprilTagDetection detection = aprilTagWebcam.getTagBySpecificId(targetID);
 
@@ -179,9 +181,9 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
       coreHex.setPower(-0.5);
     }
     if (gamepad1.dpad_left) {
-      servoPosition -= 0.01;
+      targetID = 20;
     } else if (gamepad1.dpad_right) {
-      servoPosition += 0.01;
+      targetID = 24;
     }
   }
 
@@ -197,8 +199,6 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
       FAR_POWER_AUTO();
     } else if (gamepad1.right_bumper) {
       BANK_SHOT_AUTO();
-    } else if (gamepad1.circle) {
-      ((DcMotorEx) flywheel).setVelocity(bankVelocity);
     } else if (gamepad1.square) {
       ((DcMotorEx) flywheel).setVelocity(maxVelocity);
     } else {
