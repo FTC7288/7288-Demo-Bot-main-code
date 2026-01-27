@@ -123,7 +123,7 @@ public class RedPedroPathingClose extends OpMode {
         {
             doAprilTag();
         }
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(586);
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24);
 
         switch (state) {
             case GO_TO_LAUNCH_1:
@@ -171,7 +171,7 @@ public class RedPedroPathingClose extends OpMode {
                 break;
             case INTAKE_1:
                 if(!follower.isBusy()){
-                    follower.followPath(pickupReady1ToPickup1);
+                    follower.followPath(pickupReady1ToPickup1, .4, false);
                     intake.startIntake();
                     state = State.GO_TO_LAUNCH_2;
                 }
@@ -179,8 +179,7 @@ public class RedPedroPathingClose extends OpMode {
             case GO_TO_LAUNCH_2:
                 if(!follower.isBusy()){
                     follower.followPath(pickup1ToLaunching);
-                    intake.stopIntake();
-                    state = State.GO_BACK_TO_START_POSE;
+                    state = State.WAIT_TO_FINISH_PATH_2;
                 }
                 break;
             case WAIT_TO_FINISH_PATH_2:
@@ -190,6 +189,7 @@ public class RedPedroPathingClose extends OpMode {
                 break;
             case FIND_TAG_2:
                 if(id24 != null){
+                    intake.stopIntake();
                     state = State.SPIN_UP_2;
                 }
                 break;
@@ -235,7 +235,7 @@ public class RedPedroPathingClose extends OpMode {
     private void doAprilTag() {
         //Update the vision portal
         aprilTagWebcam.update();
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(586); // TAG ID 24 is the red goal
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24); // TAG ID 24 is the red goal
         aprilTagWebcam.displayDetectionTelemetry(id24);
         // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#20)
         if (id24 != null && id24.ftcPose != null) {
