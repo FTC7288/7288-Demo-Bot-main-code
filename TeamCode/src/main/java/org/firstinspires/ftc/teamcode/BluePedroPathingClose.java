@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @Autonomous
-public class RedPedroPathingClose extends OpMode {
+public class BluePedroPathingClose extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     Intake intake = new Intake();
     Launcher launcher = new Launcher();
@@ -115,7 +115,7 @@ public class RedPedroPathingClose extends OpMode {
         FINISHED
     }
 
-    RedPedroPathingClose.State state;
+    BluePedroPathingClose.State state;
     ElapsedTime driveTimer = new ElapsedTime();
 
 
@@ -322,7 +322,7 @@ public class RedPedroPathingClose extends OpMode {
                 break;
             case FINISHED:
                 if(!follower.isBusy()) {
-                        if(driveTimer.seconds() > 2)
+                    if(driveTimer.seconds() > 2)
                         intake.stopIntake();
                 }
                 break;
@@ -333,7 +333,7 @@ public class RedPedroPathingClose extends OpMode {
         }
 
 
-        }
+    }
 
 
     private void doAprilTag() {
