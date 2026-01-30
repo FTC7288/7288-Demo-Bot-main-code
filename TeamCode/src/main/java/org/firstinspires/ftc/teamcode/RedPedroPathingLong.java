@@ -30,17 +30,13 @@ public class RedPedroPathingLong extends OpMode {
     private Follower follower;
 
 
-    private final Pose startPose = new Pose(90.28571428571429, 9.769585253456224, Math.toRadians(73)); // Start Pose of our robot.
-    private final Pose launchingPose = new Pose(90.28571428571429, 9.769585253456224, Math.toRadians(73)); // Where our robot launches from
-    private final Pose pickupReady1Pose = new Pose(98, 38.5, Math.toRadians(0)); // Ready to pick up closest row of balls
-    private final Pose pickup1Pose = new Pose(125, 38.5, Math.toRadians(0)); // Pick up closest row of balls
-    private final Pose pickupReady2Pose = new Pose(98, 60, Math.toRadians(0)); //Ready to pick up middle row of balls
-    private final Pose pickup2Pose = new Pose(125, 60, Math.toRadians(0)); //Pick up middle row of balls
-    private final Pose pickupReady3 = new Pose(98, 84, Math.toRadians(0)); //Ready to pick up far balls
-    private final Pose endPose = new Pose(125, 84, Math.toRadians(0)); //Finish with 3 balls
-
+    private final Pose startPose = new Pose(88.8, 8, Math.toRadians(90)); // Start Pose of our robot.
+    private final Pose launchingPose = new Pose(83.5, 21.5, Math.toRadians(65)); // Where our robot launches from
+    private final Pose pickup1_1Pose = new Pose(100, 8, Math.toRadians(0)); // Ready to pick up balls
+    private final Pose pickup1_2Pose = new Pose(123, 8, Math.toRadians(0)); // Pickup balls away from wall
+    private final Pose pickup1_3Pose = new Pose(133, 8, Math.toRadians(0)); // pickup balls close to wall
     private Path startToLaunching;
-    private PathChain launchingToPickupReady1, pickupReady1ToPickup1, pickup1ToLaunching, launchingToPickupReady2, pickupReady2ToPickup2, pickup2ToLaunching2, launchingToPickupReady3, pickupReady3ToFinish;
+    private PathChain launchingToPickupReady1, pickup1ToPickup2, pickup2ToPickup3, pickup3ToPickup2, pickup3ToLaunching, launchingToPickup2;
 
     public void buildPaths() {
 
@@ -50,43 +46,32 @@ public class RedPedroPathingLong extends OpMode {
 
         //these next several section set up the rest of the paths, created in the PathChain
         launchingToPickupReady1 = follower.pathBuilder()
-                .addPath(new BezierLine(launchingPose, pickupReady1Pose))
-                .setLinearHeadingInterpolation(launchingPose.getHeading(), pickupReady1Pose.getHeading())
+                .addPath(new BezierLine(launchingPose, pickup1_1Pose))
+                .setLinearHeadingInterpolation(launchingPose.getHeading(), pickup1_1Pose.getHeading())
                 .build();
 
-        pickupReady1ToPickup1 = follower.pathBuilder()
-                .addPath(new BezierLine(pickupReady1Pose, pickup1Pose))
-                .setLinearHeadingInterpolation(pickupReady1Pose.getHeading(), pickup1Pose.getHeading())
+        pickup1ToPickup2 = follower.pathBuilder()
+                .addPath(new BezierLine(pickup1_1Pose, pickup1_2Pose))
+                .setLinearHeadingInterpolation(pickup1_1Pose.getHeading(), pickup1_2Pose.getHeading())
                 .build();
 
-        pickup1ToLaunching = follower.pathBuilder()
-                .addPath(new BezierLine(pickup1Pose, launchingPose))
-                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), launchingPose.getHeading())
+        pickup2ToPickup3 = follower.pathBuilder()
+                .addPath(new BezierLine(pickup1_2Pose, pickup1_3Pose))
+                .setLinearHeadingInterpolation(pickup1_2Pose.getHeading(), pickup1_3Pose.getHeading())
                 .build();
 
-        launchingToPickupReady2 = follower.pathBuilder()
-                .addPath(new BezierLine(launchingPose, pickupReady2Pose))
-                .setLinearHeadingInterpolation(launchingPose.getHeading(), pickupReady2Pose.getHeading())
+        pickup3ToPickup2 = follower.pathBuilder()
+                .addPath(new BezierLine(pickup1_3Pose, pickup1_2Pose))
+                .setLinearHeadingInterpolation(pickup1_3Pose.getHeading(), pickup1_2Pose.getHeading())
                 .build();
 
-        pickupReady2ToPickup2 = follower.pathBuilder()
-                .addPath(new BezierLine(pickupReady2Pose, pickup2Pose))
-                .setLinearHeadingInterpolation(pickupReady2Pose.getHeading(), pickup2Pose.getHeading())
+        pickup3ToLaunching = follower.pathBuilder()
+                .addPath(new BezierLine(pickup1_3Pose, launchingPose))
+                .setLinearHeadingInterpolation(pickup1_3Pose.getHeading(), launchingPose.getHeading())
                 .build();
-
-        pickup2ToLaunching2 = follower.pathBuilder()
-                .addPath(new BezierLine(pickup2Pose, launchingPose))
-                .setLinearHeadingInterpolation(pickup2Pose.getHeading(), launchingPose.getHeading())
-                .build();
-
-        launchingToPickupReady3 =  follower.pathBuilder()
-                .addPath(new BezierLine(launchingPose, pickupReady3))
-                .setLinearHeadingInterpolation(launchingPose.getHeading(), pickupReady3.getHeading())
-                .build();
-
-        pickupReady3ToFinish = follower.pathBuilder()
-                .addPath(new BezierLine(pickupReady3, endPose))
-                .setLinearHeadingInterpolation(pickupReady3.getHeading(), endPose.getHeading())
+        launchingToPickup2 = follower.pathBuilder()
+                .addPath(new BezierLine(launchingPose, pickup1_2Pose))
+                .setLinearHeadingInterpolation( launchingPose.getHeading(), pickup1_2Pose.getHeading())
                 .build();
     }
 
@@ -96,21 +81,18 @@ public class RedPedroPathingLong extends OpMode {
         FIND_TAG_1,
         SPIN_UP_1,
         LAUNCHING_1,
-        PREPARE_TO_INTAKE_POSE_1,
-        INTAKE_1,
+        INTAKE_POSE_1_1,
+        INTAKE_1_2,
+        INTAKE_1_3,
+        INTAKE_1_4,
+        INTAKE_1_5,
+        INTAKE_1_6,
+        INTAKE_1_7,
         GO_TO_LAUNCH_2,
         WAIT_TO_FINISH_PATH_2,
         FIND_TAG_2,
         SPIN_UP_2,
         LAUNCHING_2,
-        PREPARE_TO_INTAKE_POSE_2,
-        INTAKE_2,
-        GO_TO_LAUNCH_3,
-        WAIT_TO_FINISH_PATH_3,
-        FIND_TAG_3,
-        SPIN_UP_3,
-        LAUNCHING_3,
-        PREPARE_TO_INTAKE_POSE_3,
         GO_TO_END_POSE,
         FINISHED
     }
@@ -155,10 +137,7 @@ public class RedPedroPathingLong extends OpMode {
                 state == State.LAUNCHING_1 ||
                 state == State.FIND_TAG_2 ||
                 state == State.SPIN_UP_2 ||
-                state == State.LAUNCHING_2 ||
-                state == State.FIND_TAG_3 ||
-                state == State.SPIN_UP_3 ||
-                state == State.LAUNCHING_3)
+                state == State.LAUNCHING_2)
         {
             doAprilTag();
         }
@@ -188,7 +167,7 @@ public class RedPedroPathingLong extends OpMode {
                 }
                 break;
             case LAUNCHING_1:
-                if (driveTimer.seconds() < 3) {
+                if (driveTimer.seconds() < 2) {
                     intake.startIntake();
                     launcher.loadBall();
                 }
@@ -198,26 +177,62 @@ public class RedPedroPathingLong extends OpMode {
                     launcher.stopLauncher();
                     launcher.resetFeeder();
                     //Launcher.LaunchState = Launcher.LaunchState.IDLE;
-                    state = State.PREPARE_TO_INTAKE_POSE_1;
+                    state = State.INTAKE_POSE_1_1;
                     driveTimer.reset();
                 }
                 break;
-            case PREPARE_TO_INTAKE_POSE_1:
+            case INTAKE_POSE_1_1:
                 if(!follower.isBusy()){
+                    intake.startIntake();
                     follower.followPath(launchingToPickupReady1, true);
-                    state = State.INTAKE_1;
+                    state = State.INTAKE_1_2;
                 }
                 break;
-            case INTAKE_1:
+            case INTAKE_1_2:
                 if(!follower.isBusy()){
-                    follower.followPath(pickupReady1ToPickup1, .4, false);
+                    follower.followPath(pickup1ToPickup2, .7, false);
+                    intake.startIntake();
+                    state = State.INTAKE_1_3;
+                }
+                break;
+            case INTAKE_1_3:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup2ToPickup3, .7, false);
+                    intake.startIntake();
+                    state = State.INTAKE_1_4;
+                }
+                break;
+            case INTAKE_1_4:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup3ToPickup2, .7, false);
+                    intake.startIntake();
+                    state = State.INTAKE_1_5;
+                }
+                break;
+            case INTAKE_1_5:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup2ToPickup3, .7, false);
+                    intake.startIntake();
+                    state = State.INTAKE_1_6;
+                }
+                break;
+            case INTAKE_1_6:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup3ToPickup2, .7, false);
+                    intake.startIntake();
+                    state = State.INTAKE_1_7;
+                }
+                break;
+            case INTAKE_1_7:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup2ToPickup3, .7, false);
                     intake.startIntake();
                     state = State.GO_TO_LAUNCH_2;
                 }
                 break;
             case GO_TO_LAUNCH_2:
                 if(!follower.isBusy()){
-                    follower.followPath(pickup1ToLaunching);
+                    follower.followPath(pickup3ToLaunching);
                     state = State.WAIT_TO_FINISH_PATH_2;
                 }
                 break;
@@ -250,72 +265,14 @@ public class RedPedroPathingLong extends OpMode {
                     launcher.resetFeeder();
                     Launcher.LaunchState = Launcher.LaunchState.IDLE;
                     launcher.stopLauncher();
-                    state = State.PREPARE_TO_INTAKE_POSE_2;
-                    driveTimer.reset();
-                }
-                break;
-            case PREPARE_TO_INTAKE_POSE_2:
-                if(!follower.isBusy()){
-                    follower.followPath(launchingToPickupReady2, true);
-                    state = State.INTAKE_2;
-                }
-                break;
-            case INTAKE_2:
-                if(!follower.isBusy()){
-                    follower.followPath(pickupReady2ToPickup2, .4, false);
-                    intake.startIntake();
-                    state = State.GO_TO_LAUNCH_3;
-                }
-                break;
-            case GO_TO_LAUNCH_3:
-                if(!follower.isBusy()){
-                    follower.followPath(pickup2ToLaunching2);
-                    state = State.WAIT_TO_FINISH_PATH_3;
-                }
-                break;
-            case WAIT_TO_FINISH_PATH_3:
-                if(!follower.isBusy()){
-                    state = State.FIND_TAG_3;
-                }
-                break;
-            case FIND_TAG_3:
-                if(id24 != null){
-                    intake.stopIntake();
-                    state = State.SPIN_UP_3;
-                }
-                break;
-            case SPIN_UP_3:
-                speedError = launcher.getLaunchSpeedError();
-                angleError = turret.getAngleError();
-                if (speedError < 100){
-                    state = State.LAUNCHING_3;
-                    driveTimer.reset();
-                }
-                break;
-            case LAUNCHING_3:
-                if (driveTimer.seconds() < 3) {
-                    intake.startIntake();
-                    launcher.loadBall();
-                }
-                else {
-                    intake.stopIntake();
-                    launcher.resetFeeder();
-                    Launcher.LaunchState = Launcher.LaunchState.IDLE;
-                    launcher.stopLauncher();
-                    state = State.PREPARE_TO_INTAKE_POSE_3;
-                    driveTimer.reset();
-                }
-                break;
-            case PREPARE_TO_INTAKE_POSE_3:
-                if(!follower.isBusy()){
-                    follower.followPath(launchingToPickupReady3, true);
                     state = State.GO_TO_END_POSE;
+                    driveTimer.reset();
                 }
-
+                break;
             case GO_TO_END_POSE:
                 if(!follower.isBusy()){
                     intake.startIntake();
-                    follower.followPath(pickupReady3ToFinish);
+                    follower.followPath(launchingToPickup2);
                     driveTimer.reset();
                     state = State.FINISHED;
                 }
