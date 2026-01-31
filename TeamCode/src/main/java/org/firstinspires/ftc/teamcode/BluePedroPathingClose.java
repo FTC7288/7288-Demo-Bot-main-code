@@ -162,7 +162,7 @@ public class BluePedroPathingClose extends OpMode {
         {
             doAprilTag();
         }
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24);
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(20);
 
         switch (state) {
             case GO_TO_LAUNCH_1:
@@ -339,7 +339,7 @@ public class BluePedroPathingClose extends OpMode {
     private void doAprilTag() {
         //Update the vision portal
         aprilTagWebcam.update();
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24); // TAG ID 24 is the red goal
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(20); // TAG ID 24 is the red goal
         //aprilTagWebcam.displayDetectionTelemetry(id24);
         // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#20)
         if (id24 != null && id24.ftcPose != null) {

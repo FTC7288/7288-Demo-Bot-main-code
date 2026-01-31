@@ -31,10 +31,10 @@ public class BluePedroPathingLong extends OpMode {
 
 
     private final Pose startPose = new Pose(55, 8, Math.toRadians(90)); // Start Pose of our robot.
-    private final Pose launchingPose = new Pose(60, 21.5, Math.toRadians(110)); // Where our robot launches from
-    private final Pose pickup1_1Pose = new Pose(40, 8, Math.toRadians(0)); // Ready to pick up balls
-    private final Pose pickup1_2Pose = new Pose(11, 8, Math.toRadians(0)); // Pickup balls away from wall
-    private final Pose pickup1_3Pose = new Pose(8, 8, Math.toRadians(0)); // pickup balls close to wall
+    private final Pose launchingPose = new Pose(60, 21.5, Math.toRadians(112)); // Where our robot launches from
+    private final Pose pickup1_1Pose = new Pose(40, 8, Math.toRadians(180)); // Ready to pick up balls
+    private final Pose pickup1_2Pose = new Pose(20, 8, Math.toRadians(180)); // Pickup balls away from wall
+    private final Pose pickup1_3Pose = new Pose(10, 8, Math.toRadians(180)); // pickup balls close to wall
     private Path startToLaunching;
     private PathChain launchingToPickupReady1, pickup1ToPickup2, pickup2ToPickup3, pickup3ToPickup2, pickup3ToLaunching, launchingToPickup2;
 

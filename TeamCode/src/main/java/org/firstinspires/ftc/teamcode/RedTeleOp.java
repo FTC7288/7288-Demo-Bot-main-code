@@ -72,7 +72,7 @@ public class RedTeleOp  extends OpMode {
         //  launcher.setMotorVelocity();
 
 
-        if (gamepad2.right_trigger > .5) {
+        if (gamepad2.a) {
             //     if (!launcher.getTriggerActive()) {
             // TODO: maybe also check to see that launcher measured velocities are within 10%(?) of target velocity
             //         launcher.triggerFeeder();
@@ -89,11 +89,11 @@ public class RedTeleOp  extends OpMode {
             launcher.stopLauncher();
         }
 
-        if (gamepad2.aWasPressed()) {
+        /*if (gamepad2.aWasPressed()) {
             launcher.incrementLaunchSpeed();
         } else if (gamepad2.bWasPressed()) {
             launcher.decrementLaunchSpeed();
-        }
+        }*/
 
         if (gamepad2.xWasPressed()) {
             turret.incrementTurretPosition();
