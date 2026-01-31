@@ -93,6 +93,18 @@ public class RedPedroPathingLong extends OpMode {
         FIND_TAG_2,
         SPIN_UP_2,
         LAUNCHING_2,
+        INTAKE_POSE_2_1,
+        INTAKE_2_2,
+        INTAKE_2_3,
+        INTAKE_2_4,
+        INTAKE_2_5,
+        INTAKE_2_6,
+        INTAKE_2_7,
+        GO_TO_LAUNCH_3,
+        WAIT_TO_FINISH_PATH_3,
+        FIND_TAG_3,
+        SPIN_UP_3,
+        LAUNCHING_3,
         GO_TO_END_POSE,
         FINISHED
     }
@@ -137,7 +149,10 @@ public class RedPedroPathingLong extends OpMode {
                 state == State.LAUNCHING_1 ||
                 state == State.FIND_TAG_2 ||
                 state == State.SPIN_UP_2 ||
-                state == State.LAUNCHING_2)
+                state == State.LAUNCHING_2 ||
+                state == State.FIND_TAG_3 ||
+                state == State.SPIN_UP_3 ||
+                state == State.LAUNCHING_3 )
         {
             doAprilTag();
         }
@@ -213,7 +228,7 @@ public class RedPedroPathingLong extends OpMode {
                 if(!follower.isBusy()){
                     follower.followPath(pickup2ToPickup3, .7, false);
                     intake.startIntake();
-                    state = State.INTAKE_1_6;
+                    state = State.GO_TO_LAUNCH_2;
                 }
                 break;
             case INTAKE_1_6:
@@ -256,6 +271,94 @@ public class RedPedroPathingLong extends OpMode {
                 }
                 break;
             case LAUNCHING_2:
+                if (driveTimer.seconds() < 3) {
+                    intake.startIntake();
+                    launcher.loadBall();
+                }
+                else {
+                    intake.stopIntake();
+                    launcher.resetFeeder();
+                    Launcher.LaunchState = Launcher.LaunchState.IDLE;
+                    launcher.stopLauncher();
+                    state = State.INTAKE_POSE_2_1;
+                    driveTimer.reset();
+                }
+                break;
+            case INTAKE_POSE_2_1:
+                if(!follower.isBusy()){
+                    intake.startIntake();
+                    follower.followPath(launchingToPickupReady1, true);
+                    state = State.INTAKE_2_2;
+                }
+                break;
+            case INTAKE_2_2:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup1ToPickup2, .7, false);
+                    intake.startIntake();
+                    state = State.INTAKE_2_3;
+                }
+                break;
+            case INTAKE_2_3:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup2ToPickup3, .7, false);
+                    intake.startIntake();
+                    state = State.INTAKE_2_4;
+                }
+                break;
+            case INTAKE_2_4:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup3ToPickup2, .7, false);
+                    intake.startIntake();
+                    state = State.INTAKE_2_5;
+                }
+                break;
+            case INTAKE_2_5:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup2ToPickup3, .7, false);
+                    intake.startIntake();
+                    state = State.GO_TO_LAUNCH_3;
+                }
+                break;
+            case INTAKE_2_6:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup3ToPickup2, .7, false);
+                    intake.startIntake();
+                    state = State.INTAKE_2_7;
+                }
+                break;
+            case INTAKE_2_7:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup2ToPickup3, .7, false);
+                    intake.startIntake();
+                    state = State.GO_TO_LAUNCH_3;
+                }
+                break;
+            case GO_TO_LAUNCH_3:
+                if(!follower.isBusy()){
+                    follower.followPath(pickup3ToLaunching);
+                    state = State.WAIT_TO_FINISH_PATH_3;
+                }
+                break;
+            case WAIT_TO_FINISH_PATH_3:
+                if(!follower.isBusy()){
+                    state = State.FIND_TAG_3;
+                }
+                break;
+            case FIND_TAG_3:
+                if(id24 != null){
+                    intake.stopIntake();
+                    state = State.SPIN_UP_3;
+                }
+                break;
+            case SPIN_UP_3:
+                speedError = launcher.getLaunchSpeedError();
+                angleError = turret.getAngleError();
+                if (speedError < 100){
+                    state = State.LAUNCHING_3;
+                    driveTimer.reset();
+                }
+                break;
+            case LAUNCHING_3:
                 if (driveTimer.seconds() < 3) {
                     intake.startIntake();
                     launcher.loadBall();
