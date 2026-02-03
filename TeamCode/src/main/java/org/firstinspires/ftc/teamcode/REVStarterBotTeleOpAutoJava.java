@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -16,6 +17,7 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
   private DcMotor backLeft;
   private DcMotor frontRight;
   private DcMotor backRight;
+  private DcMotor intake;
   double servoPosition;
   private static final int bankVelocity = 1050;
   private static final int farVelocity = 2200;
@@ -51,13 +53,14 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
     backLeft = hardwareMap.get(DcMotor.class, "backLeft");
     frontRight = hardwareMap.get(DcMotor.class, "frontRight");
     backRight = hardwareMap.get(DcMotor.class, "backRight");
-
+    intake = hardwareMap.get(DcMotor.class, "intake");
     // Establishing the direction and mode for the motors
     flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     flywheel.setDirection(DcMotor.Direction.REVERSE);
     coreHex.setDirection(DcMotor.Direction.REVERSE);
     frontLeft.setDirection(DcMotor.Direction.REVERSE);
     backLeft.setDirection(DcMotor.Direction.REVERSE);
+    intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
     //On initilization the Driver Station will prompt for which OpMode should be run - Auto Blue, Auto Red, or TeleOp
     while (opModeInInit()) {
@@ -128,6 +131,7 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
 
         telemetry.addData("Flywheel Target", ((DcMotorEx) flywheel).getVelocity());
         telemetry.update();
+        intake.setPower(1);
 
         // REMOVED: ((DcMotorEx) flywheel).setVelocity(shootVelocity);
         // (This line was previously overriding all your logic)
@@ -354,18 +358,22 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
         telemetry.addData("Launcher Countdown", autoLaunchTimer.seconds());
         telemetry.update();
       }
-      ((DcMotorEx) flywheel).setVelocity(0);
       coreHex.setPower(0);
       backLeft.setPower(-1);
       frontLeft.setPower(-1);
       backRight.setPower(-1);
       frontRight.setPower(-1);
       sleep(500);
-      frontLeft.setPower(-0.5);
-      backLeft.setPower(-0.5);
-      frontRight.setPower(0.5);
-      backRight.setPower(0.5);
+      frontLeft.setPower(0.5);
+      backLeft.setPower(0.5);
+      frontRight.setPower(-0.5);
+      backRight.setPower(-0.5);
       sleep(500);
+      backLeft.setPower(0);
+      frontLeft.setPower(0);
+      backRight.setPower(0);
+      frontRight.setPower(0);
+      sleep(100);
       frontLeft.setPower(0.75);
       backLeft.setPower(0.75);
       frontRight.setPower(0.75);
