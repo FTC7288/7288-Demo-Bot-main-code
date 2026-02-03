@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @Autonomous
-public class RedPedroPathingLong extends OpMode {
+public class BlueLongTacocaT extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     Intake intake = new Intake();
     Launcher launcher = new Launcher();
@@ -30,11 +30,11 @@ public class RedPedroPathingLong extends OpMode {
     private Follower follower;
 
 
-    private final Pose startPose = new Pose(88.8, 8, Math.toRadians(90)); // Start Pose of our robot.
-    private final Pose launchingPose = new Pose(83.5, 21.5, Math.toRadians(65)); // Where our robot launches from
-    private final Pose pickup1_1Pose = new Pose(100, 8, Math.toRadians(0)); // Ready to pick up balls
-    private final Pose pickup1_2Pose = new Pose(123, 8, Math.toRadians(0)); // Pickup balls away from wall
-    private final Pose pickup1_3Pose = new Pose(133, 8, Math.toRadians(0)); // pickup balls close to wall
+    private final Pose startPose = new Pose(55, 8, Math.toRadians(90)); // Start Pose of our robot.
+    private final Pose launchingPose = new Pose(60, 21.5, Math.toRadians(112)); // Where our robot launches from
+    private final Pose pickup1_1Pose = new Pose(40, 8, Math.toRadians(180)); // Ready to pick up balls
+    private final Pose pickup1_2Pose = new Pose(20, 8, Math.toRadians(180)); // Pickup balls away from wall
+    private final Pose pickup1_3Pose = new Pose(10, 8, Math.toRadians(180)); // pickup balls close to wall
     private Path startToLaunching;
     private PathChain launchingToPickupReady1, pickup1ToPickup2, pickup2ToPickup3, pickup3ToPickup2, pickup3ToLaunching, launchingToPickup2;
 
@@ -109,7 +109,7 @@ public class RedPedroPathingLong extends OpMode {
         FINISHED
     }
 
-    RedPedroPathingLong.State state;
+    BlueLongTacocaT.State state;
     ElapsedTime driveTimer = new ElapsedTime();
 
 
@@ -156,7 +156,7 @@ public class RedPedroPathingLong extends OpMode {
         {
             doAprilTag();
         }
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24);
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(20);
 
         switch (state) {
             case GO_TO_LAUNCH_1:
@@ -399,7 +399,7 @@ public class RedPedroPathingLong extends OpMode {
     private void doAprilTag() {
         //Update the vision portal
         aprilTagWebcam.update();
-        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24); // TAG ID 24 is the red goal
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(20); // TAG ID 24 is the red goal
         //aprilTagWebcam.displayDetectionTelemetry(id24);
         // NOTE: we will need a separate OPMODE (otherwise identical) that sets the target TAGID to BLUE (#20)
         if (id24 != null && id24.ftcPose != null) {
