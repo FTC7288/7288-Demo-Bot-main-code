@@ -48,18 +48,31 @@ public class BlueTeleOp  extends OpMode {
 
             double distanceToGoalCM = id20.ftcPose.range;
             launcher.setMotorVelocityForDistance(distanceToGoalCM);
-            led.setLEDGreen();
-            // NOTE: use this after distance vs speed has been measured and calibrated
-            //launcher.setMotorVelocityForDistance(distanceToGoalCM);
         } else if (numMissingTagReads < 100){
             numMissingTagReads++;
-            led.setLEDBlue();
         } else {
-            // if we can't see the target/            // default back to neutral/default
-            //turret.resetTurret();
+            // if we can't see the target
+            // default back to neutral/default
             // and turn launch motors off
             launcher.stopLauncher();
             turret.resetTurret();
+        }
+
+        if(numMissingTagReads >= 100){
+            led.setLEDRed();
+        } else if (id24 != null && id24.ftcPose != null){
+            double speedError = launcher.getLaunchSpeedError();
+            double angleError = turret.getAngleError();
+            if (speedError < 50 && angleError < 2){
+                led.setLEDGreen();
+            } else {
+                led.setLEDBlue();
+            }
+        }
+        // set LED to yellow? Or something else to indicate we don't have 100 missed reads, but aren't facing the tag now
+        // if we turn quick enough, no guarantee that we will get an angle error...
+        // maybe just > 10 missedTagReads? that would indicate that the tag reads are sketchy even if facing it
+        else if(numMissingTagReads > 10) { // || angleError > 5
             led.setLEDRed();
         }
 

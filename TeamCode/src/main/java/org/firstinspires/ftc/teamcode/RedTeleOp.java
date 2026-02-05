@@ -49,12 +49,11 @@ public class RedTeleOp  extends OpMode {
             double distanceToGoalCM = id24.ftcPose.range;
             launcher.setMotorVelocityForDistance(distanceToGoalCM);
             // NOTE: use this after distance vs speed has been measured and calibrated
-            //launcher.setMotorVelocityForDistance(distanceToGoalCM);
         } else if (numMissingTagReads < 100){
             numMissingTagReads++;
         } else {
-            // if we can't see the target/            // default back to neutral/default
-            //turret.resetTurret();
+            // if we can't see the target
+            // default back to neutral/default
             // and turn launch motors off
             launcher.stopLauncher();
             turret.resetTurret();
@@ -70,6 +69,12 @@ public class RedTeleOp  extends OpMode {
             } else {
                 led.setLEDBlue();
             }
+        }
+        // set LED to yellow? Or something else to indicate we don't have 100 missed reads, but aren't facing the tag now
+        // if we turn quick enough, no guarantee that we will get an angle error...
+        // maybe just > 10 missedTagReads? that would indicate that the tag reads are sketchy even if facing it
+        else if(numMissingTagReads > 10) { // || angleError > 5
+            led.setLEDRed();
         }
 
         // these are manual test methods to assist with tuning the target launch motor velocity at measured distances
