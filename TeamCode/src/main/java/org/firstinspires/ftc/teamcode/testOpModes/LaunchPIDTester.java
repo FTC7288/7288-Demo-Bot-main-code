@@ -43,7 +43,8 @@ public class LaunchPIDTester extends OpMode {
     int currentPIDEditIndex = 0;
 
 
-    double[] test_PIDF = new double[] {0,0,0,0};
+    // start with default from current launcher
+    double[] test_PIDF = new double[] {300, 0, 0.001, 10};
 
 
     DataLogger dl;

@@ -200,7 +200,7 @@ public class RedCloseNineBall extends OpMode {
             case SPIN_UP_1:
                 double speedError = launcher.getLaunchSpeedError();
                 double angleError = turret.getAngleError();
-                if (speedError < 50){
+                if (speedError < 50 && angleError < 2){
                     state = State.LAUNCHING_1;
                     driveTimer.reset();
                 }
@@ -262,7 +262,7 @@ public class RedCloseNineBall extends OpMode {
             case SPIN_UP_2:
                 speedError = launcher.getLaunchSpeedError();
                 angleError = turret.getAngleError();
-                if (speedError < 100){
+                if (speedError < 50 && angleError < 2){
                     state = State.LAUNCHING_2;
                     driveTimer.reset();
                 }
@@ -318,7 +318,7 @@ public class RedCloseNineBall extends OpMode {
             case SPIN_UP_3:
                 speedError = launcher.getLaunchSpeedError();
                 angleError = turret.getAngleError();
-                if (speedError < 100){
+                if (speedError < 100 && angleError < 2){
                     state = State.LAUNCHING_3;
                     driveTimer.reset();
                 }
@@ -373,7 +373,7 @@ public class RedCloseNineBall extends OpMode {
             case SPIN_UP_4:
                 speedError = launcher.getLaunchSpeedError();
                 angleError = turret.getAngleError();
-                if (speedError < 100){
+                if (speedError < 50 && angleError < 2){
                     driveTimer.reset();
                     state = State.LAUNCHING_4;
 
