@@ -29,8 +29,8 @@ public class RedCloseNineBall extends OpMode {
     int numMissingTagReads = 0;
     private Follower follower;
 
-
-    private final Pose startPose = new Pose(124.6829268292683, 122.73170731707317, Math.toRadians(36)); // Start Pose of our robot.
+//Test this later to make sure that it shifts the auto a little left (Start position X was 124)
+    private final Pose startPose = new Pose(130, 122, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose launchingPose = new Pose(92, 92, Math.toRadians(45)); // Where our robot launches from
     private final Pose pickupReady1Pose = new Pose(98, 84, Math.toRadians(0)); // Ready to pick up closest row of balls
     private final Pose pickup1Pose = new Pose(125, 84, Math.toRadians(0)); // Pick up closest row of balls
@@ -145,6 +145,13 @@ public class RedCloseNineBall extends OpMode {
         follower.setMaxPower(1);
 
         state = State.GO_TO_LAUNCH_1;
+    }
+
+    @Override
+    public void stop() {
+        Pose endPose = follower.getPose();
+        telemetry.addLine("AUTO STOPPED AT: " + endPose.getX() + ", " + endPose.getY() + ", " + endPose.getHeading());
+        WebcamTestOpMode.startingPose = endPose;
     }
 
     public void loop() {

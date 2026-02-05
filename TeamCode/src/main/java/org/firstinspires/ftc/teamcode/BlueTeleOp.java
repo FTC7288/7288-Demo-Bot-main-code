@@ -60,7 +60,7 @@ public class BlueTeleOp  extends OpMode {
 
         if(numMissingTagReads >= 100){
             led.setLEDRed();
-        } else if (id24 != null && id24.ftcPose != null){
+        } else if (id20 != null && id20.ftcPose != null){
             double speedError = launcher.getLaunchSpeedError();
             double angleError = turret.getAngleError();
             if (speedError < 50 && angleError < 2){

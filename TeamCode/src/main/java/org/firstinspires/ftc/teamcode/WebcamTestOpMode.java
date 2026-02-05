@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.sun.tools.doclint.Entity;
 
 import org.firstinspires.ftc.teamcode.mechanisms.AprilTagsWebcam;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
@@ -11,6 +13,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.LEDIndicator;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.TurretServo;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 @TeleOp
 public class WebcamTestOpMode  extends OpMode {
@@ -20,7 +23,13 @@ public class WebcamTestOpMode  extends OpMode {
     Intake intake = new Intake();
     TurretServo turret = new TurretServo();
     LEDIndicator led = new LEDIndicator();
+    public static Pose startingPose;
+    private Follower follower;
     int numMissingTagReads = 0;
+
+    //Poses
+    private final Pose launchingPose = new Pose(92, 92, Math.toRadians(45)); // Where our robot launches from
+
 
 
     @Override
@@ -31,10 +40,16 @@ public class WebcamTestOpMode  extends OpMode {
         intake.init(hardwareMap);
         turret.init(hardwareMap);
         led.init(hardwareMap);
+
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(startingPose);
+        follower.setMaxPower(1);
     }
 
     @Override
     public void loop() {
+        follower.update();
+
         //Update the vision portal
         aprilTagWebcam.update();
         AprilTagDetection id585 = aprilTagWebcam.getTagBySpecificId(0); // TAG ID 24 is the red goal
@@ -109,9 +124,18 @@ public class WebcamTestOpMode  extends OpMode {
             intake.stopIntake();
         }
 
-        // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-        // Note: pushing left stick forward gives negative value
-        drive.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        if (gamepad1.yWasPressed()) {
+            Path currentToLaunching;
+            currentToLaunching = new Path(new BezierLine(follower.getPose(), launchingPose));
+            currentToLaunching.setLinearHeadingInterpolation(follower.getHeading(), launchingPose.getHeading());
+            follower.followPath(currentToLaunching);
+        }
+
+        if (!follower.isBusy()) {
+            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+            // Note: pushing left stick forward gives negative value
+            drive.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        }
 
         // update launcher state machine
         //launcher.updateState();
@@ -126,9 +150,11 @@ public class WebcamTestOpMode  extends OpMode {
         telemetry.addLine("Target Velocity: " + launcher.getTargetLaunchSpeed());
         telemetry.addLine("Right Velocity: " + launcher.getLowerVelocity());
         telemetry.addLine("Left Velocity: " + launcher.getUpperVelocity());
-        telemetry.addData("State: ", launcher.getState());
+        //telemetry.addData("State: ", launcher.getState());
         String turretPositionStr = String.format("%.2f",turret.getCurrentPosition());
         telemetry.addLine("Turret Position: " + turretPositionStr);
+        Pose current = follower.getPose();
+        telemetry.addLine("X:" + current.getX() + ", Y:" + current.getY() + ", Heading:" + current.getHeading());
         /*
         String leftStickX = String.format("%.2f",gamepad1.left_stick_x);
         telemetry.addLine("Left Stick X:" + leftStickX);
