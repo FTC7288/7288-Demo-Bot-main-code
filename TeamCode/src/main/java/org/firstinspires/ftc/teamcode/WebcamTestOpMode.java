@@ -23,7 +23,7 @@ public class WebcamTestOpMode  extends OpMode {
     Intake intake = new Intake();
     TurretServo turret = new TurretServo();
     LEDIndicator led = new LEDIndicator();
-    public static Pose startingPose;
+    //public static Pose startingPose;
     private Follower follower;
     int numMissingTagReads = 0;
 
@@ -42,7 +42,10 @@ public class WebcamTestOpMode  extends OpMode {
         led.init(hardwareMap);
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startingPose);
+
+        telemetry.addLine("STARTING AT: " + SharedStorage.sharedPose.getX() + ", " + SharedStorage.sharedPose.getY() + ", " + SharedStorage.sharedPose.getHeading());
+        telemetry.addLine("Test Stored X: " + SharedStorage.testX);
+        follower.setStartingPose(SharedStorage.sharedPose);
         follower.setMaxPower(1);
     }
 

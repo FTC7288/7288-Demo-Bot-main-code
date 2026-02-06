@@ -149,9 +149,11 @@ public class RedCloseNineBall extends OpMode {
 
     @Override
     public void stop() {
+        follower.update();
         Pose endPose = follower.getPose();
         telemetry.addLine("AUTO STOPPED AT: " + endPose.getX() + ", " + endPose.getY() + ", " + endPose.getHeading());
-        WebcamTestOpMode.startingPose = endPose;
+        SharedStorage.sharedPose = endPose;
+        SharedStorage.testX = (int)follower.getPose().getX();
     }
 
     public void loop() {
