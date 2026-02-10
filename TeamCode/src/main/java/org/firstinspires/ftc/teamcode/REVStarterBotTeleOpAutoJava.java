@@ -18,8 +18,9 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
   private DcMotor frontRight;
   private DcMotor backRight;
   private DcMotor intake;
+  private Servo hood;
   double servoPosition;
-  private static final int bankVelocity = 1050;
+  private static final int bankVelocity = 1430;
   private static final int farVelocity = 2200;
   private static final int maxVelocity = 2200;
   private static final int shootVelocity = 1050;
@@ -36,12 +37,11 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
   private ElapsedTime autoDriveTimer = new ElapsedTime();
   AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
   private double[][] shooterLUT = {
-          {24.0, 1050},
-          {48.0, 1200},
-          {72.0, 1400},
-          {96.0, 1600},
-          {120.0, 1800},
-          {144.0, 2000}
+          {24.0, 1430},
+          {48.0, 1600},
+          {72.0, 1800},
+          {96.0, 2000},
+          {120.0, 2200},
   };
 
   @Override
@@ -54,6 +54,7 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
     frontRight = hardwareMap.get(DcMotor.class, "frontRight");
     backRight = hardwareMap.get(DcMotor.class, "backRight");
     intake = hardwareMap.get(DcMotor.class, "intake");
+    hood = hardwareMap.get(Servo.class, "hood");
     // Establishing the direction and mode for the motors
     flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     flywheel.setDirection(DcMotor.Direction.REVERSE);
