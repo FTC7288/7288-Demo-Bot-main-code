@@ -68,7 +68,7 @@ public final class Config {
     }
 
     public static class ShooterConf {
-        public static String TARGET_MOTIF = "PGP";
+        public static String TARGET_MOTIF = null;
         public static double SORT_MOTOR_POWER = 1;
         public static double BALL_DETECTION_THRESHOLD = 4;
         public static int VELOCITY = 7000;

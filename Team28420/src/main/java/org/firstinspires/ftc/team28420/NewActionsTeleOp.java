@@ -43,6 +43,10 @@ public class NewActionsTeleOp extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            if (Config.ShooterConf.TARGET_MOTIF == null) {
+                act.setMotif();
+            }
+
             if (gamepad1.cross) {
                 act.move(act.getRatiosForApriltag(AprilTag.RED));
             }
@@ -66,12 +70,10 @@ public class NewActionsTeleOp extends LinearOpMode {
                 act.revolverRight();
                 dpad_active = true;
             }
-            // защита от залипания клавиш лежит на движке
+
             if (!gamepad2.dpad_right && !gamepad2.dpad_left) dpad_active = false;
 
-            if (gamepad2.left_bumper) {
-                act.toggleDribbler(true);
-            } else act.toggleDribbler(false);
+            act.toggleDribbler(gamepad2.left_bumper);
 
             if (gamepad2.right_trigger > 0.6) {
                 act.setShooterVelocityCoefficient(gamepad2.right_trigger * gamepad2.right_trigger);

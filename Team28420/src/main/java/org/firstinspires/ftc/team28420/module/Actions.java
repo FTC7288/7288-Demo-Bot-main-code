@@ -98,6 +98,14 @@ public class Actions {
         parkingServo.setPosition(Config.ServoConf.PARKING_SERVO_STOP_POS);
     }
 
+    public void setMotif() {
+        cam.updateApriltags();
+        AprilTagDetection detection = cam.getAprilTagDetection(AprilTag.GREEN);
+        if (detection != null) {
+            Config.ShooterConf.TARGET_MOTIF = AprilTag.getMotif(detection.id);
+        }
+    }
+
     public double getCubic(double axis) {
         return Math.pow(axis, 3);
     }
