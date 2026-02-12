@@ -67,7 +67,7 @@ import java.util.List;
  *   below the name of the Limelight on the top level configuration screen.
  */
 @TeleOp(name = "Sensor: Limelight3A", group = "Sensor")
-@Disabled
+//@Disabled
 public class SensorLimelight3A extends LinearOpMode {
 
     private Limelight3A limelight;
@@ -108,7 +108,7 @@ public class SensorLimelight3A extends LinearOpMode {
                 double parseLatency = result.getParseLatency();
                 telemetry.addData("LL Latency", captureLatency + targetingLatency);
                 telemetry.addData("Parse Latency", parseLatency);
-                telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
+                //telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
 
                 telemetry.addData("tx", result.getTx());
                 telemetry.addData("txnc", result.getTxNC());
@@ -120,31 +120,33 @@ public class SensorLimelight3A extends LinearOpMode {
                 // Access barcode results
                 List<LLResultTypes.BarcodeResult> barcodeResults = result.getBarcodeResults();
                 for (LLResultTypes.BarcodeResult br : barcodeResults) {
-                    telemetry.addData("Barcode", "Data: %s", br.getData());
+                   // telemetry.addData("Barcode", "Data: %s", br.getData());
                 }
 
                 // Access classifier results
                 List<LLResultTypes.ClassifierResult> classifierResults = result.getClassifierResults();
                 for (LLResultTypes.ClassifierResult cr : classifierResults) {
-                    telemetry.addData("Classifier", "Class: %s, Confidence: %.2f", cr.getClassName(), cr.getConfidence());
+                   // telemetry.addData("Classifier", "Class: %s, Confidence: %.2f", cr.getClassName(), cr.getConfidence());
                 }
 
                 // Access detector results
                 List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
                 for (LLResultTypes.DetectorResult dr : detectorResults) {
-                    telemetry.addData("Detector", "Class: %s, Area: %.2f", dr.getClassName(), dr.getTargetArea());
+                   // telemetry.addData("Detector", "Class: %s, Area: %.2f", dr.getClassName(), dr.getTargetArea());
                 }
 
                 // Access fiducial results
                 List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
                 for (LLResultTypes.FiducialResult fr : fiducialResults) {
                     telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
+                    telemetry.addData("Pose", "Y: %.2f, X: %.2f, Z: %.2f", fr.getTargetPoseCameraSpace().getPosition().y, fr.getTargetPoseCameraSpace().getPosition().x, fr.getTargetPoseCameraSpace().getPosition().z);
+                    // NOTE: looks like fr.getTargetPoseCameraSpace().getPosition().z looks like distance to target, unsure of units
                 }
 
                 // Access color results
                 List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
                 for (LLResultTypes.ColorResult cr : colorResults) {
-                    telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
+                    //telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
                 }
             } else {
                 telemetry.addData("Limelight", "No data available");
@@ -155,3 +157,4 @@ public class SensorLimelight3A extends LinearOpMode {
         limelight.stop();
     }
 }
+

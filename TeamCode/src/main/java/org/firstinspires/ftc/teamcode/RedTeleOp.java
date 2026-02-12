@@ -141,6 +141,7 @@ public class RedTeleOp  extends OpMode {
 
         // update launcher state machine
         //launcher.updateState();
+        if(!gamepad2.right_bumper || !gamepad2.left_bumper)
         launcher.setMotorVelocity();
 
 
