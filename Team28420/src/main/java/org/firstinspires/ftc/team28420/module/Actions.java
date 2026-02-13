@@ -72,10 +72,15 @@ public class Actions {
     public void revolverRight(){
         shooter.rotateRevolver(-60);
         shooter.toggleManualControl(true);
-    }
-    public void revolverLeft(){
+        }
+        public void revolverLeft(){
         shooter.rotateRevolver(60);
         shooter.toggleManualControl(true);
+    }
+    public void setDefaultAutoMotif(String motif) {
+        for(char color : motif.toCharArray()) {
+            shooter.appendBallToMotif(color);
+        }
     }
     public void move(WheelsRatio<Double> ratio) {
         mv.setMotorsVelocityRatiosWithAcceleration(ratio, Config.WheelBaseConf.MAX_VELOCITY);
@@ -86,10 +91,10 @@ public class Actions {
                 PolarVector.fromPos(new Position(axisX, axisY)), axisR);
     }
 
-    public WheelsRatio<Double> getRatiosForApriltag(AprilTag tag) {
+    public WheelsRatio<Double> getRatiosForApriltag(AprilTag tag, double offsetX, double offsetY) {
         cam.updateApriltags();
         AprilTagDetection detection = cam.getAprilTagDetection(tag);
-        MovementParams params = cam.getMovementParamsToPoint(detection, 0, Config.CameraConf.RANGE_TO_TAG);
+        MovementParams params = cam.getMovementParamsToPoint(detection, offsetX, offsetY);
         return Movement.vectorToRatios(params.getMoveVector(), params.getTurnAbs());
     }
 

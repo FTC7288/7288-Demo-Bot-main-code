@@ -53,7 +53,7 @@ public class NewActionsTeleOp extends LinearOpMode {
 
             if (gamepad1.cross) {
 //                act.updateHeading();
-                act.move(act.getRatiosForApriltag(AprilTag.RED));
+                act.move(act.getRatiosForApriltag(AprilTag.RED, 0, Config.CameraConf.RANGE_TO_TAG));
             }
             else {
                 act.move(

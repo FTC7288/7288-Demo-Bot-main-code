@@ -34,15 +34,15 @@ public final class Config {
 
     public static final class CameraConf {
         public static final String WEBCAM = "Webcam 1";
-        public static final double RANGE_TO_TAG = 65; // inches
+        public static final double RANGE_TO_TAG = 62; // inches
         public static final double ANGLE_MAX_VELOCITY = Math.PI;
 
     }
 
     public static final class ServoConf {
         public static final String PARKING_SERVO = "parkingServo";
-        public static final double PARKING_SERVO_START_POS = 1;
-        public static final double PARKING_SERVO_STOP_POS = 0.8;
+        public static final double PARKING_SERVO_START_POS = 0;
+        public static final double PARKING_SERVO_STOP_POS = 1;
     }
 
     public static final class Etc {
@@ -57,10 +57,10 @@ public final class Config {
         public static Scalar lowPurple = new Scalar(130, 40, 40);
         public static Scalar highPurple = new Scalar(160, 255, 255);
 
-        public static Scalar cslowGreen = new Scalar(100, 150, 50);
-        public static Scalar cshighGreen = new Scalar(130, 255, 255);
+        public static Scalar cslowGreen = new Scalar(155, 0.71, 0.019);
+        public static Scalar cshighGreen = new Scalar(180, 1, 0.031);
         public static Scalar cslowPurple = new Scalar(130, 0.5, 0.006);
-        public static Scalar cshighPurple = new Scalar(240, 0.6, 0.01);
+        public static Scalar cshighPurple = new Scalar(240, 0.6, 0.04);
         public static double MIN_CIRCULARITY = 0.5; // насколько объект должен быть круглым (0.0 - 1.0)
         public static double MIN_AREA = 60000; // минимальный размер объекта
         public static double MAX_AREA = 120000;
@@ -68,7 +68,7 @@ public final class Config {
     }
 
     public static class ShooterConf {
-        public static double SCANNED_BALL_MS = 100;
+        public static double SCANNED_BALL_MS = 75;
         public static String TARGET_MOTIF = null;
         public static double SORT_MOTOR_POWER = 1;
         public static double BALL_DETECTION_THRESHOLD = 4;

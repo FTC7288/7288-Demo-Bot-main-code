@@ -37,8 +37,8 @@ public class Shooter {
     private boolean ballPresent = false;
     private final ElapsedTime debounceTimer = new ElapsedTime();
     private boolean potentialBallDetected = false;
-    // TODO: DELETE "PG" LATER
-    public String curMotif = "PG";
+
+    public String curMotif = "";
 
     public Shooter(HardwareMap hMap) {
         sortSeqMap = new HashMap<String, Integer>();
@@ -172,8 +172,11 @@ public class Shooter {
             ballPresent = false;
         }
     }
-    private void appendBallToMotif(BallDetection.BallColor color) {
+    public void appendBallToMotif(BallDetection.BallColor color) {
         curMotif += (color == BallDetection.BallColor.PURPLE) ? 'P' : 'G';
+    }
+    public void appendBallToMotif(char color) {
+        curMotif += color;
     }
     private void finalizeMotif() {
         if (isValidSequence(curMotif)) {
@@ -255,7 +258,7 @@ public class Shooter {
         if (push) {
             pusher.setPosition(0);
         } else {
-            pusher.setPosition(0.5);
+            pusher.setPosition(0.4);
         }
     }
 
@@ -269,8 +272,7 @@ public class Shooter {
     }
 
     public void shoot() {
-        if(state == Shooter.ShooterState.IDLE && isShootable()
-                && (manualControl || correctMotif))
+        if(state == Shooter.ShooterState.IDLE && isShootable())
         {
             pushBall(true);
             state = ShooterState.SHOOTING;
