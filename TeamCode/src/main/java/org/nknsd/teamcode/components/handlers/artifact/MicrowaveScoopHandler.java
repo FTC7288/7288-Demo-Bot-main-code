@@ -53,7 +53,7 @@ public class MicrowaveScoopHandler implements NKNComponent {
     class MicrowaveActionState extends StateMachine.State {
 
         //        Threshold for microwave position feedback
-        private final double FEEDBACK_POSITION_THRESHOLD = 0.01;
+        private final double FEEDBACK_POSITION_THRESHOLD = 0.05;
 
         @Override
         protected void run(ElapsedTime runtime, Telemetry telemetry) {
@@ -112,7 +112,7 @@ public class MicrowaveScoopHandler implements NKNComponent {
 
     public void toggleIntake(boolean startSpinning) {
         intaking = startSpinning;
-        spinner.setPower(startSpinning ? -1 : 0);
+        spinner.setPower(startSpinning ? 1 : 0);
     }
 
     public boolean isDone() {

@@ -37,6 +37,18 @@ public class Setup extends ProgramPart {
     private BalancedLiftHandler balancedLiftHandler;
     private PeakPointer peakPointer;
 
+    public SlotTracker getSlotTracker() {
+        return slotTracker;
+    }
+
+    private SlotTracker slotTracker;
+
+    public MicrowaveScoopHandler getMicrowaveScoopHandler() {
+        return microwaveScoopHandler;
+    }
+
+    private MicrowaveScoopHandler microwaveScoopHandler;
+
     public PowerInputMixer getPowerInputMixer() {
         return powerInputMixer;
     }
@@ -115,11 +127,11 @@ public class Setup extends ProgramPart {
         BallColorInterpreter ballColorInterpreter = new BallColorInterpreter(10, 0.01);
         components.add(ballColorInterpreter);
 
-        SlotTracker slotTracker = new SlotTracker();
+        slotTracker = new SlotTracker();
         components.add(slotTracker);
         telemetryEnabled.add(slotTracker);
 
-        MicrowaveScoopHandler microwaveScoopHandler = new MicrowaveScoopHandler();
+        microwaveScoopHandler = new MicrowaveScoopHandler();
         components.add(microwaveScoopHandler);
 
         artifactSystem = new ArtifactSystem();
@@ -170,7 +182,7 @@ public class Setup extends ProgramPart {
         components.add(srsHubHandler);
 
         PeakFinder peakFinder = new PeakFinder();
-        peakPointer = new PeakPointer(peakFinder, srsHubHandler, absolutePosition, autoPositioner);
+        peakPointer = new PeakPointer(peakFinder, srsHubHandler, autoPositioner, absolutePosition);
         components.add(peakPointer);
 
 

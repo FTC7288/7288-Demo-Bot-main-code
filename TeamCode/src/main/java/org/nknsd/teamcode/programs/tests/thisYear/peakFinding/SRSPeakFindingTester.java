@@ -1,4 +1,4 @@
-package org.nknsd.teamcode.programs.tests.allYears.sensor;
+package org.nknsd.teamcode.programs.tests.thisYear.peakFinding;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;

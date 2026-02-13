@@ -66,6 +66,6 @@ public class GamepadPart extends ProgramPart {
         intakeControlScheme.link(gamePadHandler);
         liftDriver.link(gamePadHandler, setup.getBalancedLiftHandler(), liftControlScheme);
         liftControlScheme.link(gamePadHandler);
-        srsDriver.link(gamePadHandler, srsControlScheme, StateMachine.INSTANCE, setup.getPeakPointer(), setup.getAbsolutePosition(), setup.getAutoPositioner());
+        srsDriver.link(gamePadHandler, srsControlScheme, StateMachine.INSTANCE, setup.getPeakPointer(), setup.getMicrowaveScoopHandler(), setup.getSlotTracker(), setup.getArtifactSystem());
     }
 }

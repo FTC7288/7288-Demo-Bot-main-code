@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.nknsd.teamcode.components.handlers.artifact.ArtifactSystem;
+import org.nknsd.teamcode.components.handlers.artifact.MicrowaveScoopHandler;
+import org.nknsd.teamcode.components.handlers.artifact.SlotTracker;
 import org.nknsd.teamcode.components.handlers.gamepad.GamePadHandler;
 import org.nknsd.teamcode.components.handlers.odometry.AbsolutePosition;
 import org.nknsd.teamcode.components.handlers.srs.PeakPointer;
@@ -21,8 +23,9 @@ public class SRSDriver implements NKNComponent {
     private SRSControlScheme srsControlScheme;
     private StateMachine stateMachine;
     private PeakPointer peakPointer;
-    private AbsolutePosition absolutePosition;
-    private AutoPositioner autoPositioner;
+    private MicrowaveScoopHandler microwaveScoopHandler;
+    private SlotTracker slotTracker;
+    private ArtifactSystem artifactSystem;
 
     Runnable lockTarget = new Runnable() {
         @Override
@@ -40,7 +43,7 @@ public class SRSDriver implements NKNComponent {
 
     @Override
     public boolean init(Telemetry telemetry, HardwareMap hardwareMap, Gamepad gamepad1, Gamepad gamepad2) {
-        stateMachine.addState("srsIntake", new SRSIntakeState(peakPointer, absolutePosition, autoPositioner, false));
+        stateMachine.addState("srsIntake", new SRSIntakeState(peakPointer, false, microwaveScoopHandler, slotTracker, artifactSystem, new String[]{}, new String[]{}));
 
         return true;
     }
@@ -76,12 +79,13 @@ public class SRSDriver implements NKNComponent {
 
     }
 
-    public void link(GamePadHandler gamePadHandler, SRSControlScheme srsControlScheme, StateMachine stateMachine,  PeakPointer peakPointer, AbsolutePosition absolutePosition, AutoPositioner autoPositioner) {
+    public void link(GamePadHandler gamePadHandler, SRSControlScheme srsControlScheme, StateMachine stateMachine, PeakPointer peakPointer, MicrowaveScoopHandler microwaveScoopHandler, SlotTracker slotTracker, ArtifactSystem artifactSystem) {
         this.gamePadHandler = gamePadHandler;
         this.srsControlScheme = srsControlScheme;
         this.stateMachine = stateMachine;
         this.peakPointer = peakPointer;
-        this.absolutePosition = absolutePosition;
-        this.autoPositioner = autoPositioner;
+        this.microwaveScoopHandler = microwaveScoopHandler;
+        this.slotTracker = slotTracker;
+        this.artifactSystem = artifactSystem;
     }
 }

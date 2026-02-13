@@ -10,43 +10,38 @@ import org.nknsd.teamcode.components.handlers.artifact.states.IntakeBallState;
 import org.nknsd.teamcode.components.handlers.color.BallColor;
 import org.nknsd.teamcode.components.handlers.odometry.AbsolutePosition;
 import org.nknsd.teamcode.components.motormixers.AutoPositioner;
+import org.nknsd.teamcode.components.utility.IntPoint;
 import org.nknsd.teamcode.components.utility.RobotVersion;
 import org.nknsd.teamcode.components.utility.StateMachine;
 import org.nknsd.teamcode.components.utility.feedbackcontroller.PidController;
 
 public class SRSIntakeState extends StateMachine.State {
 
-    private static final double MULT = 0.005;
     final private PeakPointer peakPointer;
-    final private AbsolutePosition position;
-    final private AutoPositioner autoPositioner;
     final private boolean eat;
     final private boolean killself;
+
+    private final String[] toStopOnEnd;
+    private final String[] toStartOnEnd;
 
     private MicrowaveScoopHandler microwaveScoopHandler;
     private SlotTracker slotTracker;
     private ArtifactSystem artifactSystem;
 
 
-    private double lastRunTime = 0;
-    private short dist = 0;
-    private Double offset = 0.0;
-    final private PidController pid = new PidController(0.1, .2, 0.05, .1, true, 0.01, 0.1);
-
-
-    public SRSIntakeState(PeakPointer peakPointer, AbsolutePosition position, AutoPositioner autoPositioner, boolean killSelf) {
+    public SRSIntakeState(PeakPointer peakPointer, boolean killSelf, String[] toStopOnEnd, String[] toStartOnEnd) {
         this.peakPointer = peakPointer;
-        this.position = position;
-        this.autoPositioner = autoPositioner;
         this.killself = killSelf;
+        this.toStopOnEnd = toStopOnEnd;
+        this.toStartOnEnd = toStartOnEnd;
         eat = false;
     }
 
-    public SRSIntakeState(PeakPointer peakPointer, AbsolutePosition position, AutoPositioner autoPositioner, boolean killSelf, MicrowaveScoopHandler microwaveScoopHandler, SlotTracker slotTracker, ArtifactSystem artifactSystem) {
+    public SRSIntakeState(PeakPointer peakPointer, boolean killSelf, MicrowaveScoopHandler microwaveScoopHandler, SlotTracker slotTracker, ArtifactSystem artifactSystem, String[] toStopOnEnd, String[] toStartOnEnd) {
         this.peakPointer = peakPointer;
-        this.position = position;
-        this.autoPositioner = autoPositioner;
         this.killself = killSelf;
+        this.toStopOnEnd = toStopOnEnd;
+        this.toStartOnEnd = toStartOnEnd;
         this.microwaveScoopHandler = microwaveScoopHandler;
         this.slotTracker = slotTracker;
         this.artifactSystem = artifactSystem;
@@ -55,46 +50,40 @@ public class SRSIntakeState extends StateMachine.State {
 
     @Override
     protected void run(ElapsedTime runtime, Telemetry telemetry) {
-        if (killself && peakPointer.targetAcquired()) {
+        if (killself && peakPointer.targetAcquired() && !eat) {
             StateMachine.INSTANCE.stopAnonymous(this);
-            peakPointer.enableTargeting(false);
-        }
-
-        if (eat && runtime.milliseconds() - lastRunTime > 100) {
-            if (peakPointer.getDist() != null && peakPointer.getOffset() != null) {
-                dist = peakPointer.getDist();
-                offset = peakPointer.getOffset();
-            }
-            double x = (Math.sin(offset) + dist) * MULT;
-            double y = (Math.cos(offset) + dist) * MULT;
-
-            autoPositioner.setTargetX(position.getPosition().x - x, pid);
-            autoPositioner.setTargetY(position.getPosition().y - y, pid);
-
-            lastRunTime = runtime.milliseconds();
         }
     }
 
     @Override
     protected void started() {
-        peakPointer.enableTargeting(true);
+        peakPointer.enableTargeting(true, eat);
+
         if (eat) {
             int slot = 0;
-            for (int i = 0; i < 3; i++){
+            for (int i = 0; i < 3; i++) {
                 BallColor color = slotTracker.getSlotColor(i);
-                if(color == BallColor.NOTHING){
+                if (color == BallColor.NOTHING) {
                     slot = i;
                 }
             }
-            if(killself){
-            StateMachine.INSTANCE.startAnonymous(new IntakeBallState(microwaveScoopHandler, slotTracker, artifactSystem, slot, false, new String[]{name}, new String[]{}));}
-            else{
-                StateMachine.INSTANCE.startAnonymous(new IntakeBallState(microwaveScoopHandler, slotTracker, artifactSystem, slot, false, new String[]{}, new String[]{}));}
+
+            if (killself) {
+                StateMachine.INSTANCE.startAnonymous(new IntakeBallState(microwaveScoopHandler, slotTracker, artifactSystem, slot, false, new String[]{name}, new String[]{}));
+            } else {
+                StateMachine.INSTANCE.startAnonymous(new IntakeBallState(microwaveScoopHandler, slotTracker, artifactSystem, slot, false, new String[]{}, new String[]{}));
+            }
         }
     }
 
     @Override
     protected void stopped() {
-
+        peakPointer.enableTargeting(false, false);
+        for (String stateName : this.toStopOnEnd) {
+            StateMachine.INSTANCE.stopState(stateName);
+        }
+        for (String stateName : this.toStartOnEnd) {
+            StateMachine.INSTANCE.startState(stateName);
+        }
     }
 }
