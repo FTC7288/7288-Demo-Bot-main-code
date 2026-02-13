@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,9 +19,9 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
   private DcMotor intake;
   private Servo hood;
   double servoPosition;
-  private static final int bankVelocity = 1430;
-  private static final int farVelocity = 2200;
-  private static final int maxVelocity = 2200;
+  private static final int bankVelocity = 1400;
+  private static final int farVelocity = 1700;
+  private static final int maxVelocity = 1800;
   private static final int shootVelocity = 1050;
   int targetID = 20;
   private static final String TELEOP = "TELEOP";
@@ -33,15 +32,20 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
   private static final String AUTO_FORWARD = "AUTO FORWARD";
   private String operationSelected = TELEOP;
   private double WHEELS_INCHES_TO_TICKS = (28 * 5 * 3) / (3 * Math.PI);
+
+  private double hoodOffset = 0.72;
   private ElapsedTime autoLaunchTimer = new ElapsedTime();
   private ElapsedTime autoDriveTimer = new ElapsedTime();
   AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
   private double[][] shooterLUT = {
-          {24.0, 1430},
-          {48.0, 1600},
-          {72.0, 1800},
-          {96.0, 2000},
-          {120.0, 2200},
+          {24.0, 1330},
+          {48.0, 1430},
+          {72.0, 1550},
+          {96.0, 1600},
+          {120.0, 1700},
+          {150.0, 1800},
+          {180.0, 1900},
+          {210.0, 2000}
   };
 
   @Override
@@ -81,7 +85,7 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
       doAutoForward();
     } else {
       doTeleOp();
-      servoPosition = 0;
+
     }
   }
 
@@ -127,9 +131,9 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
         splitStickArcadeDrive();
         setFlywheelVelocity(); // This now runs the flywheel constantly
         manualCoreHexControl();
-
+        hood.setPosition(hoodOffset + getHoodSetpoint());
         aprilTagWebcam.update();
-
+        telemetry.addData("Hood angle", hood.getPosition());
         telemetry.addData("Flywheel Target", ((DcMotorEx) flywheel).getVelocity());
         telemetry.update();
 
@@ -139,6 +143,16 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
     }
   }
 
+  private double getHoodSetpoint(){
+    org.firstinspires.ftc.vision.apriltag.AprilTagDetection detection = aprilTagWebcam.getTagBySpecificId(targetID);
+    double currentRange = -1;
+    if (detection != null && detection.ftcPose != null) {
+      currentRange = detection.ftcPose.range;
+      telemetry.addData("dist", currentRange);
+      return currentRange * 0.001;
+    }
+    return 0;
+  }
 
   private void setFlywheelVelocity() {
     // 1. Get distance from AprilTag
@@ -239,14 +253,19 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
   private void manualCoreHexControl() {
     // Manual control for the intake
     if (gamepad1.cross) {
-      intake.setPower(-1);
+      intake.setPower(-1.0);
     } else if (gamepad1.triangle) {
-      intake.setPower(0);
+      intake.setPower(0.0);
     }
     if (gamepad1.dpad_left) {
       targetID = 20;
     } else if (gamepad1.dpad_right) {
       targetID = 24;
+    }
+    if (gamepad1.dpad_up) {
+
+    } else if (gamepad1.dpad_down) {
+      hood.setPosition(0.0);
     }
   }
 
@@ -279,11 +298,11 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
         telemetry.update();
       }
       ((DcMotorEx) flywheel).setVelocity(0);
-      coreHex.setPower(0);
-      backLeft.setPower(-1);
-      frontLeft.setPower(-1);
-      backRight.setPower(-1);
-      frontRight.setPower(-1);
+      coreHex.setPower(0.0);
+      backLeft.setPower(-1.0);
+      frontLeft.setPower(-1.0);
+      backRight.setPower(-1.0);
+      frontRight.setPower(-1.0);
       sleep(500);
       backLeft.setPower(0.5);
       frontLeft.setPower(0.5);
@@ -295,10 +314,10 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
       backRight.setPower(0.75);
       frontRight.setPower(0.75);
       sleep(500);
-      backLeft.setPower(0);
-      frontLeft.setPower(0);
-      backRight.setPower(0);
-      frontRight.setPower(0);
+      backLeft.setPower(0.0);
+      frontLeft.setPower(0.0);
+      backRight.setPower(0.0);
+      frontRight.setPower(0.0);
     }
   }
 
@@ -306,30 +325,30 @@ public class REVStarterBotTeleOpAutoJava extends LinearOpMode {
     if (opModeIsActive()) {
       telemetry.addData("RUNNING OPMODE", operationSelected);
       telemetry.update();
-      backLeft.setPower(1);
-      frontLeft.setPower(1);
-      backRight.setPower(1);
-      frontRight.setPower(1);
+      backLeft.setPower(1.0);
+      frontLeft.setPower(1.0);
+      backRight.setPower(1.0);
+      frontRight.setPower(1.0);
       sleep(1125);
-      backLeft.setPower(0);
-      frontLeft.setPower(0);
-      backRight.setPower(0);
-      frontRight.setPower(0);
+      backLeft.setPower(0.0);
+      frontLeft.setPower(0.0);
+      backRight.setPower(0.0);
+      frontRight.setPower(0.0);
       sleep(100);
       backLeft.setPower(0.5);
       frontLeft.setPower(0.5);
       backRight.setPower(-0.5);
       frontRight.setPower(-0.5);
       sleep(500);
-      backLeft.setPower(0);
-      frontLeft.setPower(0);
-      backRight.setPower(0);
-      frontRight.setPower(0);
+      backLeft.setPower(0.0);
+      frontLeft.setPower(0.0);
+      backRight.setPower(0.0);
+      frontRight.setPower(0.0);
       sleep(100);
-      backLeft.setPower(1);
-      frontLeft.setPower(1);
-      backRight.setPower(1);
-      frontRight.setPower(1);
+      backLeft.setPower(1.0);
+      frontLeft.setPower(1.0);
+      backRight.setPower(1.0);
+      frontRight.setPower(1.0);
       sleep(750);
       // Fire balls
       autoLaunchTimer.reset();
