@@ -1,6 +1,7 @@
 package org.nknsd.teamcode.components.handlers.artifact.states;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -54,6 +55,7 @@ public class IntakeBallState extends StateMachine.State{
     protected void started() {
         artifactSystem.setIntakeState(this);
         microwaveScoopHandler.setMicrowavePosition(MicrowavePositions.values()[targetSlot]);
+        RobotLog.v("starting intakestate for slot " + targetSlot);
     }
 
     @Override
@@ -69,5 +71,6 @@ public class IntakeBallState extends StateMachine.State{
         for (String stateName : this.toStartOnEnd) {
             StateMachine.INSTANCE.startState(stateName);
         }
+        RobotLog.v("ending intakestate for slot " + targetSlot);
     }
 }

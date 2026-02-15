@@ -21,7 +21,7 @@ public class PeakFinder {
             y = 7 - (i / 8);
             order[i][0] = x;
             order[i][1] = y;
-            RobotLog.v("SO[" + i + "] : " + x + " , " + y);
+//            RobotLog.v("SO[" + i + "] : " + x + " , " + y);
         }
         return order;
     }
@@ -37,3 +37,4 @@ public class PeakFinder {
 
 
 }
+

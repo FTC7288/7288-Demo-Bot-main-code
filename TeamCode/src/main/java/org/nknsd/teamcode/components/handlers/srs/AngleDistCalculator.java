@@ -15,3 +15,4 @@ public class AngleDistCalculator {
         return Math.sqrt(x * x + y * y);
     }
 }
+

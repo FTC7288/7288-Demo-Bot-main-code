@@ -1,6 +1,7 @@
 package org.nknsd.teamcode.components.handlers.srs;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.nknsd.teamcode.components.handlers.artifact.ArtifactSystem;
@@ -73,6 +74,8 @@ public class SRSIntakeState extends StateMachine.State {
                 }
             }
 
+            RobotLog.v("starting srs mode for slot " + slot);
+
             if (killSelf) {
                 StateMachine.INSTANCE.startAnonymous(new IntakeBallState(microwaveScoopHandler, slotTracker, artifactSystem, slot, false, new String[]{name}, new String[]{}));
             } else {
@@ -90,5 +93,7 @@ public class SRSIntakeState extends StateMachine.State {
         for (String stateName : this.toStartOnEnd) {
             StateMachine.INSTANCE.startState(stateName);
         }
+        RobotLog.v("ending srs mode");
     }
 }
+

@@ -95,15 +95,15 @@ public class PeakPointer implements NKNComponent {
         if (runtime.milliseconds() - lastRunTime > WAIT_TIME_MS) {
             short[][] data = srsHubHandler.getNormalizedDists();
             if (data[0][0] == oldData){
-                RobotLog.v("same");
+//                RobotLog.v("same");
             } else {
-                RobotLog.v("not same");
+//                RobotLog.v("not same");
             }
             oldData = data[0][0];
             point = peakFinder.findClosestPeak(data);
 
             if (targetingEnabled && point != null) {
-                RobotLog.v("peak " + point.toString());
+//                RobotLog.v("peak " + point.toString());
 
                 dist = AngleDistCalculator.calculateDistance(point);
                 angle = -AngleDistCalculator.calculateHeadingAngle(point);
@@ -112,8 +112,8 @@ public class PeakPointer implements NKNComponent {
 
                 if (eatEnabled) {
                     if (angle != null) {
-                        RobotLog.v("offset " + angle);
-                        RobotLog.v("dist " + dist);
+//                        RobotLog.v("offset " + angle);
+//                        RobotLog.v("dist " + dist);
 
                         double absAngle = position.getPosition().h + angle;
 
