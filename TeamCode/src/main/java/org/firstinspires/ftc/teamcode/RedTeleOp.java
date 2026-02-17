@@ -37,7 +37,7 @@ public class RedTeleOp  extends OpMode {
     @Override
     public void loop() {
 
-        if(!gamepad2.b || !gamepad2.right_bumper || !gamepad1.left_bumper) {
+        if (!gamepad2.b && !gamepad2.right_bumper && !gamepad1.left_bumper) {
             //Update the vision portal
             aprilTagWebcam.update();
             AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24); // TAG ID 24 is the red goal
@@ -78,7 +78,17 @@ public class RedTeleOp  extends OpMode {
             else if (numMissingTagReads > 10) { // || angleError > 5
                 led.setLEDRed();
             }
+        } else if (gamepad2.right_bumper) {
+            launcher.presetMotorVelocity(1000);
+            telemetry.addLine("Preset 1000");
+        } else if (gamepad2.left_bumper) {
+            launcher.presetMotorVelocity(1400);
+            telemetry.addLine("preset 1400");
+        } else if (gamepad2.b) {
+            telemetry.addLine("skip april tag");
+            //This skips the april tag reading and math
         }
+
 
         // these are manual test methods to assist with tuning the target launch motor velocity at measured distances
         if (gamepad2.leftStickButtonWasPressed()) {
@@ -95,17 +105,12 @@ public class RedTeleOp  extends OpMode {
             //         launcher.triggerFeeder();
             launcher.loadBall();
 
-        } else if (gamepad2.x){
+        } else if (gamepad2.x) {
             launcher.unloadBall();
         } else {
             launcher.resetFeeder();
         }
 
-        if (gamepad2.right_bumper){
-            launcher.presetMotorVelocity(1000);
-        } else if (gamepad2.left_bumper){
-            launcher.presetMotorVelocity(1400);
-        }
 
         if (gamepad2.leftStickButtonWasPressed()) {
             launcher.startLauncher();
@@ -129,7 +134,7 @@ public class RedTeleOp  extends OpMode {
         //For Intake (test if same buttons works)
         if (gamepad1.right_trigger != 0 || gamepad2.right_stick_y == 1.0) {
             intake.startIntake();
-        } else if (gamepad1.left_trigger !=0) {
+        } else if (gamepad1.left_trigger != 0) {
             intake.reverseIntake();
         } else {
             intake.stopIntake();
@@ -141,7 +146,6 @@ public class RedTeleOp  extends OpMode {
 
         // update launcher state machine
         //launcher.updateState();
-        if(!gamepad2.right_bumper || !gamepad2.left_bumper)
         launcher.setMotorVelocity();
 
 
