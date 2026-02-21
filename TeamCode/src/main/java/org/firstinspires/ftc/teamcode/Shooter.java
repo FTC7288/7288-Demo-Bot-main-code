@@ -46,8 +46,8 @@ public class Shooter {
         return this.shooterPower;
     }
 
-    public void shooter85() {
-        this.shooterPower = 0.8;
+    public void shooter45() {
+        this.shooterPower = 0.45;
         setMotorPower(this.shooterPower);
     }
 
@@ -56,18 +56,18 @@ public class Shooter {
         setMotorPower(this.shooterPower);
     }
 
-    public void shooter50() {
+    public void shooter55() {
+        this.shooterPower = 0.55;
+        setMotorPower(this.shooterPower);
+    }
+
+    public void shooter60() {
         this.shooterPower = 0.6;
         setMotorPower(this.shooterPower);
     }
 
-    public void shooter70() {
-        this.shooterPower = 0.7;
-        setMotorPower(this.shooterPower);
-    }
-
     public void reverseMotor() {
-        this.shooterPower = this.shooterPower * -1;
+        this.shooterPower = -1;
         setMotorPower(this.shooterPower);
     }
 

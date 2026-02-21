@@ -15,22 +15,22 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 @Autonomous(name = "BlueEmergencyAuto", group = "Autonomous")
 public class EmergencyAuto extends LinearOpMode {
 
-    double startPoseX = -56; //SmallTriangleAuto = 58
-    double startPoseY = 45; //SmallTriangleAuto = 0
+    double startPoseX = -56;
+    double startPoseY = -45;
 
     @Override
     public void runOpMode() {
         Pose2d startingPose = new Pose2d(
                 startPoseX,
                 startPoseY,
-                Math.toRadians(-127)
+                Math.toRadians(233)
         );
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, startingPose);
 
         Action trajectoryAction = drive
                 .actionBuilder(startingPose)
-                .strafeToLinearHeading(new Vector2d(-31, -48), Math.toRadians(-127))
+                .strafeToLinearHeading(new Vector2d(-40, -48), Math.toRadians(233))
                 .waitSeconds(.5)
                 .build();
         // Initialization

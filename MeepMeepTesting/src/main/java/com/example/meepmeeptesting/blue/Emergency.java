@@ -10,8 +10,8 @@ public class Emergency {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
-        double startPoseX = -56; //SmallTriangleAuto = 58
-        double startPoseY = -45; //SmallTriangleAuto = 0
+        double startPoseX = -56;
+        double startPoseY = -45;
 
         Pose2d startingPose = new Pose2d(
                 startPoseX,

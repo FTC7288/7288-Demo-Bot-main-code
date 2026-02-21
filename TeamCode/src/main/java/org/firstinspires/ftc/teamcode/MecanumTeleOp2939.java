@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.commands.Intake;
+
 
 @TeleOp(name = "2025TeleOp2939", group="Linear OpMode")
 public class MecanumTeleOp2939 extends LinearOpMode {
@@ -24,7 +24,8 @@ public class MecanumTeleOp2939 extends LinearOpMode {
         Shooter shooter = new Shooter(hardwareMap, telemetry);
         // ColorSensing colorSensor = new ColorSensing(hardwareMap, telemetry);
         Intake intake = new Intake(hardwareMap);
-        Blocker blocker = new Blocker(hardwareMap, telemetry);
+        DoubleBlocker leftBlocker = new DoubleBlocker(hardwareMap, telemetry, "left");
+        DoubleBlocker rightBlocker = new DoubleBlocker(hardwareMap, telemetry, "right");
         waitForStart();
 
         if (isStopRequested()) return;
@@ -37,7 +38,7 @@ public class MecanumTeleOp2939 extends LinearOpMode {
             intake.run(gamepad2);
 
             // colorSensor.updateTelemetry();
-            blocker.powerServo(operatorController, telemetry);
+            leftBlocker.powerServo(operatorController, telemetry);
 
             //The Y button is for shooting
             //Use the Dpad to change the speed of the motors
@@ -61,17 +62,19 @@ public class MecanumTeleOp2939 extends LinearOpMode {
                 buttonState = ButtonState.Y;
             } else if (wasXPressed && buttonState != ButtonState.X) {
                 buttonState = ButtonState.X;
+            } else if  (gamepad2.dpad_left){
+                shooter.reverseMotor();
             }
 
             switch (buttonState) {
                 case A:
-                    shooter.shooter50();
+                    shooter.shooter55();
                     break;
                 case B:
-                    shooter.shooter70();
+                    shooter.shooter60();
                     break;
                 case Y:
-                    shooter.shooter85();
+                    shooter.shooter45();
                     break;
                 case X:
                     shooter.setZero();
@@ -83,8 +86,8 @@ public class MecanumTeleOp2939 extends LinearOpMode {
             telemetry.addData("shooter", "shooter(%.2f)", shooter.getShooterPower());
             telemetry.addData("shooter encoder", "shooter encoder (%.2f), ", shooter.shooterEncoderPosition());
             telemetry.addData("intake","intake (%.2f)", intake.getIntakePower());
-            telemetry.addData("Blocker left", "blocker left position (%.2f), ", blocker.getLeftServoPosition());
-            telemetry.addData("Blocker right", "block right position (%.2f), ", blocker.getRightServoPosition());
+            telemetry.addData("Blocker left", "blocker left position (%.2f), ", leftBlocker.getServoPosition());
+            telemetry.addData("Blocker right", "block right position (%.2f), ", rightBlocker.getServoPosition());
             telemetry.update();
         }
     }

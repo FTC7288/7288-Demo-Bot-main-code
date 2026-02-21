@@ -1,23 +1,16 @@
-package com.example.meepmeeptesting.red;
+package com.example.meepmeeptesting.blue;
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class Emergency {
+public class SmallTriangleEmergency {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
-        double startPoseX = -56; //SmallTriangleAuto = 58
-        double startPoseY = 45; //SmallTriangleAuto = 0
+        Pose2d startingPose = new Pose2d(62, -20, Math.toRadians(180));
 
-        Pose2d startingPose = new Pose2d(
-                startPoseX,
-                startPoseY,
-                Math.toRadians(127)
-        );
 
         RoadRunnerBotEntity robot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -27,10 +20,9 @@ public class Emergency {
 
         robot.runAction(
                 robot.getDrive()
-                    .actionBuilder(startingPose)
-                    .strafeToLinearHeading(new Vector2d(-40, 48), Math.toRadians(127))
-                    .waitSeconds(.5)
-                    .build()
+                        .actionBuilder(startingPose)
+                        .lineToX(40)
+                        .build()
         );
 
 
@@ -40,5 +32,6 @@ public class Emergency {
                 .setBackgroundAlpha(0.95f)
                 .addEntity(robot)
                 .start();
+
     }
 }
