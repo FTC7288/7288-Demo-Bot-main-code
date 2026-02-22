@@ -32,6 +32,7 @@ public final class Config {
         public final static RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection = RevHubOrientationOnRobot.UsbFacingDirection.UP;
     }
 
+    @com.acmerobotics.dashboard.config.Config
     public static final class CameraConf {
         public static final String WEBCAM = "Webcam 1";
         public static final double RANGE_TO_TAG = 62; // inches
@@ -41,13 +42,12 @@ public final class Config {
 
     public static final class ServoConf {
         public static final String PARKING_SERVO = "parkingServo";
-        public static final double PARKING_SERVO_START_POS = 0;
-        public static final double PARKING_SERVO_STOP_POS = 1;
+        public static final double PARKING_SERVO_START_POS = 0.1;
+        public static final double PARKING_SERVO_STOP_POS = 0.7;
     }
 
     public static final class Etc {
         public static Telemetry telemetry;
-        public static ElapsedTime teleopTime;
     }
 
     public static class BallDetectionConf {
@@ -57,23 +57,25 @@ public final class Config {
         public static Scalar lowPurple = new Scalar(130, 40, 40);
         public static Scalar highPurple = new Scalar(160, 255, 255);
 
-        public static Scalar cslowGreen = new Scalar(155, 0.71, 0.019);
-        public static Scalar cshighGreen = new Scalar(180, 1, 0.031);
-        public static Scalar cslowPurple = new Scalar(130, 0.5, 0.006);
-        public static Scalar cshighPurple = new Scalar(240, 0.6, 0.04);
         public static double MIN_CIRCULARITY = 0.5; // насколько объект должен быть круглым (0.0 - 1.0)
         public static double MIN_AREA = 60000; // минимальный размер объекта
         public static double MAX_AREA = 120000;
         public static double kP = 0.01;
     }
-
+    @com.acmerobotics.dashboard.config.Config
     public static class ShooterConf {
-        public static double SCANNED_BALL_MS = 75;
+        public static Scalar cslowGreen = new Scalar(155, 0.71, 0.019);
+        public static Scalar cshighGreen = new Scalar(180, 1, 0.031);
+        public static Scalar cslowPurple = new Scalar(130, 0.5, 0.006);
+        public static Scalar cshighPurple = new Scalar(240, 0.6, 0.04);
+        public static double PUSH_NEUTRAL = 0.3;
+
+        public static double SCANNED_BALL_MS = 70;
         public static String TARGET_MOTIF = null;
         public static double SORT_MOTOR_POWER = 1;
         public static double BALL_DETECTION_THRESHOLD = 4;
-        public static int VELOCITY = 7000;
-        public static int DRIBBLER_VELOCITY = 2000;
+        public static int VELOCITY = 6767;
+        public static int DRIBBLER_VELOCITY = 4000;
         public static double SORT_MOTOR_TICKS_PER_TURN = 2380.0;
     }
 

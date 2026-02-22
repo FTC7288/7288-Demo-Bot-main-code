@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.team28420.module;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -21,6 +20,8 @@ public class Actions {
     private final Camera cam;
     private final Shooter shooter;
     private final Servo parkingServo;
+
+    public boolean scanAllowed = true;
 
     private double cachedHeading = 0.0;
 
@@ -51,36 +52,46 @@ public class Actions {
         cachedHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
     public void updateShooter() {
-        shooter.update();
+        shooter.update(scanAllowed);
     }
 
     public void toggleShooterManualControl(boolean active) {
         shooter.toggleManualControl(active);
     }
-    public void toggleDribbler(boolean active) {
-        shooter.toggleDribbler(active);
+    public void setDribblerVelocityCoefficient(float k) {
+        shooter.setDribblerVelocityCoefficient(k);
     }
 
     public void setShooterVelocityCoefficient(float k) {
         shooter.setVelocityCoefficient(k);
     }
 
-    public void shoot() {
-        shooter.shoot();
+    public void afterStart() {
+        shooter.afterStart();
     }
 
-    public void revolverRight(){
-        shooter.rotateRevolver(-60);
-        shooter.toggleManualControl(true);
-        }
-        public void revolverLeft(){
-        shooter.rotateRevolver(60);
+    public boolean shoot() {
+        return shooter.shoot();
+    }
+
+    public void revolverRotate(double deg){
+        shooter.rotateRevolver(deg);
         shooter.toggleManualControl(true);
     }
+    public void resetRevolverTicks() {
+        shooter.resetRevolverTicks();
+    }
+    public void alignRevolverToTarget() {
+        shooter.alignRevolverToTarget();
+    }
+
     public void setDefaultAutoMotif(String motif) {
         for(char color : motif.toCharArray()) {
             shooter.appendBallToMotif(color);
         }
+    }
+    public boolean isShootable() {
+        return shooter.isShootable();
     }
     public void move(WheelsRatio<Double> ratio) {
         mv.setMotorsVelocityRatiosWithAcceleration(ratio, Config.WheelBaseConf.MAX_VELOCITY);
@@ -98,12 +109,20 @@ public class Actions {
         return Movement.vectorToRatios(params.getMoveVector(), params.getTurnAbs());
     }
 
+    public WheelsRatio<Double> getRatiosLookApriltag(AprilTag tag, double offsetX, double offsetY) {
+        cam.updateApriltags();
+        AprilTagDetection detection = cam.getAprilTagDetection(tag);
+        MovementParams params = cam.getMovementParamsToOffset(detection, offsetX, offsetY);
+        return Movement.vectorToRatios(params.getMoveVector(), params.getTurnAbs());
+    }
+
     public void park() {
         parkingServo.setPosition(Config.ServoConf.PARKING_SERVO_STOP_POS);
     }
 
     public void setMotif() {
         cam.updateApriltags();
+
         AprilTagDetection detection = cam.getAprilTagDetection(AprilTag.GREEN);
         if (detection != null) {
             Config.ShooterConf.TARGET_MOTIF = AprilTag.getMotif(detection.id);

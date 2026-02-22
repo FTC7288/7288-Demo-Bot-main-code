@@ -56,12 +56,20 @@ public class Shooter {
 
     public void setup() {
         right.setDirection(DcMotorSimple.Direction.REVERSE);
-        revolver.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(10, 0, 0, 0));
 
         setMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMotorsMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        pusher.setPosition(Config.ShooterConf.PUSH_NEUTRAL);
+        revolver.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(10, 0, 0, 0));
+        left.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(10, 0, 0, 0));
+        right.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(10, 0, 0, 0));
+
         setMotorsZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+    public void afterStart() {
+        syncTicks();
+        pusher.setPosition(0.3);
     }
     public void toggleManualControl(boolean active) {
         if(state == ShooterState.IDLE) {
@@ -76,8 +84,8 @@ public class Shooter {
         }
     }
 
-    public void toggleDribbler(boolean active) {
-        dribbler.setVelocity(active?Config.ShooterConf.DRIBBLER_VELOCITY:0);
+    public void setDribblerVelocityCoefficient(float k) {
+        dribbler.setVelocity(Config.ShooterConf.DRIBBLER_VELOCITY * k);
     }
 
     public void setMotorsMode(DcMotor.RunMode mode) {
@@ -91,7 +99,7 @@ public class Shooter {
         right.setZeroPowerBehavior(behavior);
     }
 
-    public void syncTicks() {
+    private void syncTicks() {
         globalTarget = revolver.getCurrentPosition();
     }
 
@@ -137,10 +145,10 @@ public class Shooter {
         Config.Etc.telemetry.addData("saturation", hsv[1]);
         Config.Etc.telemetry.addData("value", hsv[2]);
 
-        if (checkColors(hsv, Config.BallDetectionConf.cslowPurple, Config.BallDetectionConf.cshighPurple)) {
+        if (checkColors(hsv, Config.ShooterConf.cslowPurple, Config.ShooterConf.cshighPurple)) {
             return BallDetection.BallColor.PURPLE;
         }
-        if (checkColors(hsv, Config.BallDetectionConf.cslowGreen, Config.BallDetectionConf.cshighGreen)) {
+        if (checkColors(hsv, Config.ShooterConf.cslowGreen, Config.ShooterConf.cshighGreen)) {
             return BallDetection.BallColor.GREEN;
         }
         return null;
@@ -185,7 +193,7 @@ public class Shooter {
             correctMotif = false;
         }
     }
-    private boolean alignRevolverToTarget() {
+    public boolean alignRevolverToTarget() {
         rotateRevolver(60);
         if(Config.ShooterConf.TARGET_MOTIF == null || Config.ShooterConf.TARGET_MOTIF.isEmpty()) return false;
 
@@ -213,6 +221,12 @@ public class Shooter {
         } else {
             rotateRevolver(-120);
         }
+    }
+
+    public void resetRevolverTicks() {
+        revolver.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        revolver.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        syncTicks();
     }
 
     public boolean checkColors(float[] hsv, Scalar low, Scalar high) {
@@ -256,9 +270,9 @@ public class Shooter {
 
     public void pushBall(boolean push) {
         if (push) {
-            pusher.setPosition(0);
+            pusher.setPosition(0.05);
         } else {
-            pusher.setPosition(0.4);
+            pusher.setPosition(0.3);
         }
     }
 
@@ -271,16 +285,18 @@ public class Shooter {
         right.setVelocity(Config.ShooterConf.VELOCITY * k);
     }
 
-    public void shoot() {
+    public boolean shoot() {
         if(state == Shooter.ShooterState.IDLE && isShootable())
         {
             pushBall(true);
             state = ShooterState.SHOOTING;
             shooterTime.reset();
+            return true;
         }
+        return false;
     }
 
-    public void update() {
+    public void update(boolean scanAllowed) {
         switch(state) {
             case SHOOTING:
                 if(shooterTime.milliseconds() >= 600) {
@@ -309,7 +325,7 @@ public class Shooter {
                 break;
 
             case IDLE:
-                if (!isShootable() && !manualControl) scanBall();
+                if (!isShootable() && !manualControl && !isMotifFull() && scanAllowed) scanBall();
                 break;
         }
     }

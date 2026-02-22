@@ -74,6 +74,15 @@ public class Camera {
         return new MovementParams(vector, rotateForce);
     }
 
+    public MovementParams getMovementParamsToOffset(AprilTagDetection detection, double offsetX, double offsetY) {
+        if (detection == null) {
+            return new MovementParams(new PolarVector(0, 0), 0);
+        }
+        PolarVector vector = getVectorToPoint(detection.ftcPose.x, detection.ftcPose.y, offsetX, offsetY);
+        double rotateForce = getRotateForce(Math.toRadians(-detection.ftcPose.bearing));
+        return new MovementParams(vector, rotateForce);
+    }
+
     public AprilTagDetection getAprilTagDetection(AprilTag tag) {
         for (AprilTagDetection detection : lastDetections) {
             if (AprilTag.fromId(detection.id) == tag) {
