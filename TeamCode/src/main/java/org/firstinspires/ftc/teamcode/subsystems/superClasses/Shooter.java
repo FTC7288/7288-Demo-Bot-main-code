@@ -31,7 +31,7 @@ public class Shooter {
     private double thetaT;
     double speed;
 
-    public Shooter(HardwareMap hardwareMap, Telemetry t, ElapsedTime r){
+    public Shooter(HardwareMap hardwareMap, Telemetry t, ElapsedTime r) {
         //init servos and motors
         shooterR = new MotorEx(hardwareMap, "shooterR", MotorEx.GoBILDA.BARE);
         shooterL = new MotorEx(hardwareMap, "shooterL", MotorEx.GoBILDA.BARE);
@@ -52,83 +52,83 @@ public class Shooter {
         runtime = r;
     }
 
-    public double getMotorVel(){
+    public double getMotorVel() {
         return (shooterL.getVelocity());
 
     }
 
-    public double getMotorRPM(){
+    public double getMotorRPM() {
         //gets rotations per sec then converts it to rpm
-        return (shooterL.getVelocity()/28)*60;
+        return (shooterL.getVelocity() / 28) * 60;
     }
 
-    public double RPMToVel(double RPM){
-        return (RPM/60)*28;
+    public double RPMToVel(double RPM) {
+        return (RPM / 60) * 28;
     }
 
-    public void setVel(double flywheelV){
+    public void setVel(double flywheelV) {
         shooterR.setVelocity(flywheelV);
         shooterL.setVelocity(flywheelV);
     }
 
-    protected void setRPM(double flywheelRPM){
+    protected void setRPM(double flywheelRPM) {
         shooterR.setVelocity(RPMToVel(flywheelRPM));
         shooterL.setVelocity(RPMToVel(flywheelRPM));
     }
 
-    public void flywheelSpin(double targetVelo, double currentVelo, double kf){//kf is a tester varible
-        if (targetVelo-currentVelo <= 0){
+    public void flywheelSpin(double targetVelo, double currentVelo, double kf) {//kf is a tester varible
+        if (targetVelo - currentVelo <= 0) {
             speed = 0;
         } else {
             speed = 1;
         }
         shooterL.set(speed);
         shooterR.set(speed);
-        telemetry.addData("target velocity", Math.round(targetVelo*100)/100.0);
-        telemetry.addData("current velocity", Math.round(currentVelo*100)/100.0);
+        telemetry.addData("target velocity", Math.round(targetVelo * 100) / 100.0);
+        telemetry.addData("current velocity", Math.round(currentVelo * 100) / 100.0);
     }
 
-    public void rotateTurret(double theta){
-        telemetry.addData("turret", Math.round(theta*100)/100.0);
+    public void rotateTurret(double theta) {
+        telemetry.addData("turret", Math.round(theta * 100) / 100.0);
         theta = normalizeDeg(theta);
 
         thetaT = theta;
 
         //hard stops
-        if (theta > 72){
+        if (theta > 72) {
             theta = 72;
         }
-        if (theta < -72){
+        if (theta < -72) {
             theta = -72;
         }
 
         //setting it
-        theta = 0.5025 /*center*/ + theta * (1.74 /(360.0)*1.40);
+        theta = 0.5025 /*center*/ + theta * (1.74 / (360.0) * 1.40);
         right.setPosition(theta);
         left.setPosition(theta);
     }
 
-    public void rotateTurretZeroTest(double theta){
+    public void rotateTurretZeroTest(double theta) {
         right.setPosition(theta);
         left.setPosition(theta);
     }
 
-    public void rotateTurretConversionTest(double theta, double mul){
-        telemetry.addData("turret", Math.round(theta*100)/100.0);
+    public void rotateTurretConversionTest(double theta, double mul) {
+        telemetry.addData("turret", Math.round(theta * 100) / 100.0);
         theta = normalizeDeg(theta);
 
         thetaT = theta;
 
         //hard stops
-        if (theta > 75){
+        if (theta > 75) {
             theta = 75;
         }
-        if (theta < -75){
+        if (theta < -75) {
             theta = -75;
         }
 
         //setting it
-        theta = 0.5025 /*center*/ + theta * (1.74 /(360.0)*mul);
+        theta = 0.5025 /*center*/ + theta * (1.74 / (360.0) * mul);
         right.setPosition(theta);
         left.setPosition(theta);
     }
@@ -144,35 +144,12 @@ public class Shooter {
     }
 
     public void setHood(double theta) {
-        theta = 1-theta;
+        theta = 1 - theta;
         hood.setPosition(theta);
-        telemetry.addData("raw hood", Math.round(theta*100)/100.0);
+        telemetry.addData("raw hood", Math.round(theta * 100) / 100.0);
     }
 
-    public double PIDF(double error, double setpoint, double kp, double ki, double kd, double kF) {
-
-        integral += error;
-        double derivative = error - last_error;
-
-        double proportional = error * kp;
-        double integralTerm = integral * ki;
-        double derivativeTerm = derivative * kd;
-
-        // Feedforward = kF * setpoint; important for scaling feedforward
-        double feedforward = kF * setpoint;
-
-        double correction = proportional + integralTerm + derivativeTerm + feedforward;
-
-        last_error = error;
-
-        return correction;
-    }
-
-    public double servoPos(){
+    public double servoPos() {
         return hood.getPosition();
     }
-    public double getTurret(){
-        return thetaT;
-    }
-
 }
