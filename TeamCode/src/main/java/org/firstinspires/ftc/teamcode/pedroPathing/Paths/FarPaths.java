@@ -12,7 +12,7 @@ public class FarPaths extends Paths{
         this.follower = follower;
     }
 
-    public Pose startPose = makePos(87, 8); // Start Pose of our robot
+    public Pose startPose = makePos(88, 8); // Start Pose of our robot
     public Pose ballCollect1 = makePos(126, 37);
     public Pose ballCollect12 = makePos(133, 37);
     public Pose ballCollect1Out = makePos(120, 37);
@@ -22,7 +22,7 @@ public class FarPaths extends Paths{
     public Pose ballCollect2 = makePos(130, 9);
     public Pose ballCollect22 = makePos(133, 9);
     public Pose out = makePos(125, 9);
-    public Pose park = makePos(98, 25, 90);
+    public Pose park = makePos(105, 10, 0);
     public Pose midShoot4 = new Pose(85, 7);
 
     private Pose outGet;
@@ -132,7 +132,7 @@ public class FarPaths extends Paths{
     }
 
     public PathChain shootTo2(){ return bezierLine(shootPose, ballCollect2); }
-    public PathChain shootTo3(){ return bezierLine(shootPose2, ballCollect1); }
+    public PathChain shootTo3(){ return bezierLine(shootPose2, ballCollect12); }
     public PathChain shootTo4(){ //return bezierLine(shootPose2, ballCollect2);
         return bezierCurve(shootPose2, midShoot4, ballCollect2);
     }

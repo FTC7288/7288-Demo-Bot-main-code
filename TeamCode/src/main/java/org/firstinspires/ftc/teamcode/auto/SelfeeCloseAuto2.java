@@ -85,13 +85,13 @@ public class SelfeeCloseAuto2 extends OpMode {
                             resetActionTimer();
                             pathState = PathState.SHOOT;
                         }
-                    } else if (spikeMark == 2 || spikeMark == 3 /*|| spikeMark == 4*/) {
+                    } else if (spikeMark == 2 /*|| spikeMark == 5 */|| spikeMark == 4) {
                         follower.followPath(paths.selfeeToShoot(), 0.9, true);
                         if (follower.atParametricEnd()) {
                             resetActionTimer();
                             pathState = PathState.SHOOT;
                         }
-                    } else if(spikeMark == 4){
+                    } else if(spikeMark == 3){
                         follower.followPath(paths._2ToShoot(), 0.9, true);
                         if (follower.atParametricEnd()) {
                             resetActionTimer();
@@ -124,21 +124,21 @@ public class SelfeeCloseAuto2 extends OpMode {
                     if (spikeMark == 0) {
                         follower.followPath(paths.shootTo1(), 0.9, true);
 
-                        if (follower.atParametricEnd() && waitSecs(3)) {
+                        if (follower.atParametricEnd() && waitSecs(1)) {
                             spikeMark += 1;
                             resetActionTimer();
                             pathState = PathState.TO_SHOOT;
                         }
-                    } else if (spikeMark == 1 || spikeMark == 2 /*|| spikeMark == 3*/){
+                    } else if (spikeMark == 1 || spikeMark == 3 /*|| spikeMark == 4*/){
                         follower.followPath(paths.shootToSelfee(), 0.9, true);
 
-                        if (follower.atParametricEnd() && waitSecs(6) || waitSecs(7)) {
+                        if (follower.atParametricEnd() && waitSecs(5) || waitSecs(6)) {
                             spikeMark += 1;
                             resetActionTimer();
                             pathState = PathState.TO_SHOOT;
                             //pathState = PathState.OUT;
                         }
-                    } else if (spikeMark == 3){
+                    } else if (spikeMark == 2){
                         follower.followPath(paths.shootTo2(), 0.9, true);
 
                         if (follower.atParametricEnd()) {
@@ -153,33 +153,6 @@ public class SelfeeCloseAuto2 extends OpMode {
                             resetActionTimer();
                             pathState = PathState.PARK;
                         }
-                    }
-                }
-                break;
-
-            case OUT:
-                if (intake.haveBall()){
-                    resetActionTimer();
-                    pathState = PathState.TO_SHOOT;
-                } else if (!follower.isBusy()){
-                    follower.followPath(paths.selfeeWiggle1(), 0.8, true);
-
-                    if(follower.atParametricEnd()) {
-                        resetActionTimer();
-                        pathState = PathState.IN;
-                    }
-                }
-                break;
-
-            case IN:
-                if (intake.haveBall()){
-                    resetActionTimer();
-                    pathState = PathState.TO_SHOOT;
-                } else if (!follower.isBusy()){
-                    follower.followPath(paths.selfeeWiggle2(), 0.8, true);
-                    if(follower.atParametricEnd() || waitSecs(3)) {
-                        resetActionTimer();
-                        pathState = PathState.TO_SHOOT;
                     }
                 }
                 break;

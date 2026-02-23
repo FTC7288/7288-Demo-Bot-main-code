@@ -95,10 +95,10 @@ public class Shooter {
         thetaT = theta;
 
         //hard stops
-        if (theta > 75){
+        if (theta > 72){
             theta = 75;
         }
-        if (theta < -75){
+        if (theta < -72){
             theta = -75;
         }
 
@@ -131,23 +131,6 @@ public class Shooter {
         theta = 0.5025 /*center*/ + theta * (1.74 /(360.0)*mul);
         right.setPosition(theta);
         left.setPosition(theta);
-    }
-    public void rotateTurretAuto(double theta){
-        theta = normalizeDeg(theta);
-
-        //hard stops
-        if (theta > 72){
-            theta = 72;
-        }
-        if (theta < -72){
-            theta = -72;
-        }
-
-        //setting it
-        theta = 0.48 /*center*/ + theta * (1/(71.35*2));
-        right.setPosition(theta);
-        left.setPosition(theta);
-        telemetry.addData("turret", Math.round(theta*100)/100.0);
     }
 
     public static double normalizeDeg(double angleDeg) {

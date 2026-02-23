@@ -37,6 +37,7 @@ public class FarAutoAttempt2 extends OpMode {
     private Follower follower;
     private FarPaths paths;
     private Telemetry dash;
+    private Boolean timerOnce = false;
 
     // Actions
     public enum PathState {
@@ -56,9 +57,9 @@ public class FarAutoAttempt2 extends OpMode {
     private int count2 = 0;
     private int stuckRun = 0;
     private int inPark = 0;
-    private double turnTableAngle = 65;
-    private double turnTableAngle2 = 68;
-    private double hoodHeight = 0.225;
+    private double turnTableAngle = 72;
+    private double turnTableAngle2 = 75;
+    private double hoodHeight = 0.1;
     double newY;
 
     // For Vision
@@ -94,21 +95,17 @@ public class FarAutoAttempt2 extends OpMode {
                             resetActionTimer();
                             pathState = PathState.INTAKE;
                         }
-                    } else if (spikeMark == 2 || spikeMark == 3) {
+                    } else if (spikeMark == 2 || spikeMark == 3 || spikeMark == 4) {
                         if (waitSecs(1.75)) { // waits 1 sec to wait for all balls to shoot
                             resetActionTimer();
                             spikeMark += 1;
                             pathState = PathState.DETECT;
                         }
-                    } else if (spikeMark == 4) {
+                    } else if (spikeMark == 5) {
                         if (waitSecs(1.75)) { // waits 1 sec to wait for all balls to shoot
-                            park();
-                            follower.followPath(paths.shootToPark(), 0.8, false);
-
-                            if(follower.atParametricEnd()) {
-                                resetActionTimer();
-                                pathState = PathState.PARK;
-                            }
+                            spikeMark += 1;
+                            resetActionTimer();
+                            pathState = PathState.INTAKE;
                         }
                     }
                 }
@@ -116,6 +113,8 @@ public class FarAutoAttempt2 extends OpMode {
 
             case INTAKE:
                 if (intake.haveBall()){
+                    //intake.setIntakeSpeed(0.5);
+                    timerOnce = true;
                     resetActionTimer();
                     spikeMark += 1;
                     pathState = PathState.TO_SHOOT;
@@ -129,18 +128,23 @@ public class FarAutoAttempt2 extends OpMode {
                         follower.followPath(paths.shootTo1(), 0.9, false);
 
                         if (follower.atParametricEnd() || waitSecs(6)) {
-                                spikeMark += 1;
-                                resetActionTimer();
-                                pathState = PathState.TO_SHOOT;
+                            spikeMark += 1;
+                            resetActionTimer();
+                            pathState = PathState.TO_SHOOT;
                         }
                     } else if (spikeMark == 1) {
                         follower.followPath(paths.shootTo2(), 0.9, false);
 
-                        if (follower.atParametricEnd() || waitSecs(1)){
+                        if (follower.atParametricEnd() || waitSecs(2)){
                             spikeMark += 1;
                             resetActionTimer();
-                            pathState = PathState.OUT;
+                            pathState = PathState.TO_SHOOT;
                         }
+                    } else if (spikeMark == 6) {
+                        park();
+                        done = true;
+                        follower.followPath(paths.shootToPark(), 0.9, false);
+                        pathState = PathState.PARK;
                     }
                 }
                 break;
@@ -172,7 +176,8 @@ public class FarAutoAttempt2 extends OpMode {
                         if (follower.atParametricEnd() || waitSecs(3)) {
                             resetActionTimer();
                             count = 0;
-                            pathState = PathState.OUT;
+                            //pathState = PathState.OUT;
+                            pathState = PathState.TO_SHOOT;
                         }
                     } else if (x != 0 || y != 0){
                         if (count2 == 0) {
@@ -204,7 +209,8 @@ public class FarAutoAttempt2 extends OpMode {
                             count = 0;
                             count2 = 0;
                             detect = true;
-                            pathState = PathState.OUT;
+                            //pathState = PathState.OUT;
+                            pathState = PathState.TO_SHOOT;
                         }
                     }
                 }
@@ -215,9 +221,7 @@ public class FarAutoAttempt2 extends OpMode {
                     resetActionTimer();
                     pathState = PathState.TO_SHOOT;
                 }
-
                 intake.transferOff();
-
                 if (!follower.isBusy()) {
                     if (spikeMark == 2) {
 
@@ -262,12 +266,6 @@ public class FarAutoAttempt2 extends OpMode {
 
             case IN:
                 intake.transferOff();
-
-                if (intake.haveBall()){
-                    resetActionTimer();
-                    pathState = PathState.TO_SHOOT;
-                }
-
                 if (!follower.isBusy()) {
                     if (spikeMark == 2) {
                         follower.followPath(paths.inSet(), 0.9, false);
@@ -303,9 +301,9 @@ public class FarAutoAttempt2 extends OpMode {
             case TO_SHOOT:
                 if(!follower.isBusy()) {
                     if (spikeMark == 1) {
-                        shooter.rotateTurretAuto(turnTableAngle2);
+                        shooter.rotateTurret(turnTableAngle2);
                         if (shootCount == 0) {
-                            follower.followPath(paths.collectToShootNotSetFirst(), 0.8, false);
+                            follower.followPath(paths.collectToShootNotSet(), 0.8, false);
                             shootCount += 1;
                         }
 
@@ -315,30 +313,36 @@ public class FarAutoAttempt2 extends OpMode {
                             pathState = PathState.SHOOT;
                         }
                     } else if (spikeMark == 2) {
-                        shooter.rotateTurretAuto(turnTableAngle);
-                        if (shootCount == 0) {
-                            follower.followPath(paths.collectToShootNotSet(), 0.8, false);
-                            shootCount += 1;
-                        }
+                        if(waitSecs(1)) {
+                            intake.setIntakeSpeed(0);
+                            shooter.rotateTurret(turnTableAngle);
+                            if (shootCount == 0) {
+                                follower.followPath(paths.collectToShootNotSet(), 0.8, false);
+                                shootCount += 1;
+                            }
 
-                        if (follower.atParametricEnd()) {
-                            resetActionTimer();
-                            shootCount = 0;
-                            pathState = PathState.SHOOT;
+                            if (follower.atParametricEnd()) {
+                                resetActionTimer();
+                                shootCount = 0;
+                                pathState = PathState.SHOOT;
+                            }
                         }
-                    } else if (spikeMark == 3 || spikeMark == 4) {
-                        shooter.rotateTurretAuto(turnTableAngle);
+                    } else if (spikeMark == 3 || spikeMark == 4 || spikeMark == 5) {
+                        shooter.rotateTurret(turnTableAngle);
 
-                        if (shootCount == 0) {
-                            follower.followPath(paths.collectToShootNotSet(), 0.8, false);
-                            shootCount += 1;
-                        }
+                        if(waitSecs(1)) {
+                            intake.setIntakeSpeed(0);
 
-                        if (follower.atParametricEnd()) {
-                            resetActionTimer();
-                            shootCount = 0;
-                            stuckRun = 0;
-                            pathState = PathState.SHOOT;
+                            if (shootCount == 0) {
+                                follower.followPath(paths.collectToShootNotSet(), 0.8, false);
+                                shootCount += 1;
+                            }
+
+                            if (follower.atParametricEnd()) {
+                                resetActionTimer();
+                                shootCount = 0;
+                                pathState = PathState.SHOOT;
+                            }
                         }
                     }
                 }
@@ -358,7 +362,7 @@ public class FarAutoAttempt2 extends OpMode {
         shooter.off();
         intake.intakeOff();
         intake.transferOff();
-        shooter.rotateTurretAuto(0);
+        shooter.rotateTurret(0);
     }
 
     @Override
@@ -396,7 +400,7 @@ public class FarAutoAttempt2 extends OpMode {
             turnTableAngle = -65;
             turnTableAngle2 = -68;
         }
-        shooter.rotateTurretAuto(turnTableAngle);
+        shooter.rotateTurret(turnTableAngle);
 
         // resets timers
         runtime.reset();
