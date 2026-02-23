@@ -19,6 +19,7 @@ public class RobotActions {
     public double DELETEBUTTHISISVEL = 1720;
     public double DELETEBUTTHISISHOOD = 0.3;
     public double DELETEBUTTHISISTURRET = 0.48;
+    private double noiseRedution = 0;
 
     //gamepads
     Gamepad gamepad1, gamepad2;
@@ -55,7 +56,7 @@ public class RobotActions {
     private final double CONSTY = 13.375;
     private final double fieldLength = 144;
     private double speedDif;
-    private double noahMode = 1.0;
+    private boolean noahMode;
 
     public RobotActions (Gamepad g1, Gamepad g2, Drivetrain dt, Intake in, Shooter sh, Follower fo, ElapsedTime ru, Telemetry te, Lights li){
         gamepad1 = g1;
@@ -122,7 +123,17 @@ public class RobotActions {
     }
 
     public void updateIntake(){
-        intake.setIntPower(noahMode*gamepad2.right_stick_y + 0.1);
+        if(noahMode){
+            if(gamepad2.right_stick_y > 0 || gamepad2.right_trigger > 0.8){
+                intake.setIntPower(gamepad2.right_stick_y + 0.1);
+            }
+            else{
+                intake.setIntPower(0.1);
+            }
+        }
+        else{
+            intake.setIntPower(-gamepad2.right_stick_y + 0.1);
+        }
         intake.intakeIn();
         intake.intakeMachine();
         if (intake.haveBall()){
@@ -155,12 +166,23 @@ public class RobotActions {
         telemetry.addData("moving mag", vel.getMagnitude());
         telemetry.addData("shooting dif", speedDif);
 
-        if(!rotating && Math.abs(gamepad2.left_stick_y) > 0.05 && vel.getMagnitude() < 20 && Math.abs(turAngle) < 72 && dist >= 66){
-            intake.setTransferVelPID(-gamepad2.left_stick_y * speedMul * 2250, intake.getTransferVel(), 0, 0);
+        if(noahMode){
+            if((-gamepad2.left_stick_y > 0 || gamepad2.right_trigger > 0.8) && !rotating && Math.abs(gamepad2.left_stick_y) > 0.05 && vel.getMagnitude() < 20 && Math.abs(turAngle) < 72 && dist >= 66){
+                intake.setTransferVelPID(-gamepad2.left_stick_y * speedMul * 2250, intake.getTransferVel(), 0, 0);
+            }
+            else{
+                //intake.setTransferVelPID(0, intake.getTransferVel(),0,0);
+                intake.setTransferPower(0.1);
+            }
         }
         else{
-            //intake.setTransferVelPID(0, intake.getTransferVel(),0,0);
-            intake.setTransferPower(0.1);
+            if(!rotating && Math.abs(gamepad2.left_stick_y) > 0.05 && vel.getMagnitude() < 20 && Math.abs(turAngle) < 72 && dist >= 66){
+                intake.setTransferVelPID(-gamepad2.left_stick_y * speedMul * 2250, intake.getTransferVel(), 0, 0);
+            }
+            else{
+                //intake.setTransferVelPID(0, intake.getTransferVel(),0,0);
+                intake.setTransferPower(0.1);
+            }
         }
     }
     public void updateTransfer() {
@@ -239,7 +261,7 @@ public class RobotActions {
         }
     }
     public void toggleNoahMode(){
-        noahMode *= -1;
+        noahMode = !noahMode;
     }
 
     private void updateTurret(OLDChoose.Alliance currentColor, double posX, double posY, double h){
@@ -279,8 +301,9 @@ public class RobotActions {
         }
 
         telemetry.addData("turretAngle", turretAngle);
-        shooter.rotateTurret(turretAngle);
-        turAngle = turretAngle;
+        noiseRedution = (turretAngle + noiseRedution*3.0)/4.0;
+        shooter.rotateTurret(noiseRedution);
+        turAngle = noiseRedution;
     }
 
     private void updateTurretConversion(OLDChoose.Alliance currentColor, double posX, double posY, double h, double mul){
