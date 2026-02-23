@@ -96,10 +96,10 @@ public class Shooter {
 
         //hard stops
         if (theta > 72){
-            theta = 75;
+            theta = 72;
         }
         if (theta < -72){
-            theta = -75;
+            theta = -72;
         }
 
         //setting it

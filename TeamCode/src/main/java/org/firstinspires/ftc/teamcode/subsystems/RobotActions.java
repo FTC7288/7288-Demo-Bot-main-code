@@ -357,11 +357,12 @@ public class RobotActions {
 
         if(dist > 120){//far zone
             shooter.setHood(0.10);
-            speed = -1243 + 593.005*Math.log(dist);
+            speed = -1253 + 593.005*Math.log(dist);
         }
         else if(dist > 66){ // close
-            shooter.setHood(-0.0000188373*Math.pow(dist, 3)+0.00493387*Math.pow(dist, 2)-0.435788*dist+13.655);
-            speed = 3.30426*dist+1064.70526;
+            double hood = 2.725*Math.pow(0.983908, dist);
+            shooter.setHood(hood);
+            speed = 3.30426*dist+1058.70526;
         }
         else{
             shooter.setHood(1);
