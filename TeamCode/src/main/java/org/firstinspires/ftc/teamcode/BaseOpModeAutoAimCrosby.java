@@ -20,8 +20,15 @@ import static org.firstinspires.ftc.teamcode.Util.constants.RobotStats.firingpin
 import static org.firstinspires.ftc.teamcode.launcher.AutoFirePower.autoLaunch;
 import static org.firstinspires.ftc.teamcode.limelight.LimelightMotifSetting.limelightMotifSet;
 import static org.firstinspires.ftc.teamcode.limelight.LimelightPosSetting.limelightposupdate;
+import static org.firstinspires.ftc.teamcode.Util.constants.FIELD.shoottargetx;
+import static org.firstinspires.ftc.teamcode.Util.constants.FIELD.shoottargetyblue;
+import static org.firstinspires.ftc.teamcode.Util.constants.FIELD.shoottargetyred;
 
+import static java.lang.Math.atan2;
+
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -35,6 +42,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Util.Enum.Balls;
 import org.firstinspires.ftc.teamcode.Util.Enum.DrumSlots;
 import org.firstinspires.ftc.teamcode.Util.Enum.States;
+import org.firstinspires.ftc.teamcode.Util.RobotPosition;
 import org.firstinspires.ftc.teamcode.positioning.odometry.FieldOrientedDriving;
 
 
@@ -332,8 +340,7 @@ public class BaseOpModeAutoAimCrosby extends LinearOpMode {
             else if (gamepad1.right_bumper) scooper.setVelocity(-999, AngleUnit.RADIANS);
             else scooper.setVelocity(0, AngleUnit.RADIANS);
 
-            /*boolean autoAimPressed = gamepad2.right_bumper && !autoAimLast;
-            autoAimLast = gamepad2.right_bumper;
+            boolean autoAimPressed = gamepad2.right_bumper;
 
             if (autoAimPressed){
 
@@ -372,7 +379,7 @@ public class BaseOpModeAutoAimCrosby extends LinearOpMode {
 
                 fullunloadflag = true;
                 rapidtime.reset();
-            }//*/
+            }//
 
 
             drive.localizer.update();
