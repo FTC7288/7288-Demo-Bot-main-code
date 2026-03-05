@@ -77,7 +77,7 @@ public final class constants {
         //Targets are in Meters
         public static final double shoottargetx = -FIELD_HALF;
         public static final double shoottargetyred = FIELD_HALF;
-        public static final double shoottargetyblue = -1.6256;
+        public static final double shoottargetyblue = -FIELD_HALF;
 
         public static final double mtoin = 39.370787;
     }

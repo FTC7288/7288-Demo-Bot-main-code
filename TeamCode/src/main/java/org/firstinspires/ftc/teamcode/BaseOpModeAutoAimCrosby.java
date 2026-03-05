@@ -23,6 +23,7 @@ import static org.firstinspires.ftc.teamcode.limelight.LimelightPosSetting.limel
 import static org.firstinspires.ftc.teamcode.Util.constants.FIELD.shoottargetx;
 import static org.firstinspires.ftc.teamcode.Util.constants.FIELD.shoottargetyblue;
 import static org.firstinspires.ftc.teamcode.Util.constants.FIELD.shoottargetyred;
+import static org.firstinspires.ftc.teamcode.limelight.LimelightPosSetting.roadrunnerupdatevialimelight;
 
 import static java.lang.Math.atan2;
 
@@ -361,16 +362,17 @@ public class BaseOpModeAutoAimCrosby extends LinearOpMode {
 
                 double robotautoaimtargetangle = atan2(arctanintermediatey, arctanintermediatex);
 
+
                 //if (!isred) autoaimleft = -Math.PI;
 
                 Action rotatetotargetangle = drive.actionBuilder(drive.localizer.getPose())
-                        .turnTo(robotautoaimtargetangle + autoaimleft)
+                        .turnTo(robotautoaimtargetangle)
                         .build();
-                for(int i = 0; i < 20; i++) {
+                /*for(int i = 0; i < 20; i++) {
                     autoAimPressed = rotatetotargetangle.run(new TelemetryPacket());
-                }
+                }*/
 
-                //Actions.runBlocking(rotatetotargetangle);
+                Actions.runBlocking(rotatetotargetangle);
                 //double robotnewrotation = atan2(startPose.heading.imag, startPose.heading.real);
                 //pinpoint.setHeading(robotnewrotation,AngleUnit.RADIANS);
 
@@ -386,13 +388,13 @@ public class BaseOpModeAutoAimCrosby extends LinearOpMode {
                 rapidtime.reset();
             }//
 
-
             drive.localizer.update();
 
+            roadrunnerupdatevialimelight(limelight,drive);
+            Pose2d rodrunnercords = drive.localizer.getPose();
 
-            double[] robotcoordinates = getRobotCoordinates();
-            telemetry.addData("robotx", robotcoordinates[0]);
-            telemetry.addData("roboty", robotcoordinates[1]);
+            telemetry.addData("rrrobotx", rodrunnercords.position.x);
+            telemetry.addData("rrroboty", rodrunnercords.position.y);
             telemetry.addData("robot timer",rapidtime.milliseconds());
 
             telemetry.addData("loaded ball1",SLOT_0.getLoadedBall().name());

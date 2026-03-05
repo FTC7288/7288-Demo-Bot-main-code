@@ -42,13 +42,13 @@ public class LimeLightFieldTesting extends LinearOpMode {
                         if (robotpose != null) {
                             double x = robotpose.getPosition().x;
                             double y = robotpose.getPosition().y;
-                            telemetry.addData("bot Location", "(" + x + ", " + y + ")");
+                            telemetry.addData("bot Location", "(x" + x + ", " + y + "y)");
                         }
                     }
                 }
             }
             else {
-                telemetry.addLine("no robotlocation update");
+                telemetry.addLine("no robot location update");
             }
 
             telemetry.update();
