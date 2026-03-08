@@ -34,7 +34,7 @@ public class Hardware {
     public Servo light;
     public Limelight3A limelight;
 
-    public CameraName Webcam_1;
+//    public CameraName Webcam_1;
 
     // Odometry
     public final GoBildaPinpointDriver pinPointOdo;
@@ -53,7 +53,7 @@ public class Hardware {
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
         this.llmotor = hwMap.get(DcMotorEx.class, Specifications.LLMOTOR);
-        this.Webcam_1 = hwMap.get(WebcamName.class, Specifications.WEBCAM_1);
+//        this.Webcam_1 = hwMap.get(WebcamName.class, Specifications.WEBCAM_1);
         this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
 
         this.hood = hwMap.get(Servo.class, Specifications.HOOD);

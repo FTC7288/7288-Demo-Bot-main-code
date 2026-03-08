@@ -40,7 +40,7 @@ public class Specifications {
     public static final String BKLF_MOTOR = "lb";
     public static final String BKRT_MOTOR = "rb";
 
-    public static final String LIME_LIGHT = "lime";
+    public static final String LIME_LIGHT = "limelight";
 
     public static final String LIGHT = "light";
 
@@ -64,5 +64,5 @@ public class Specifications {
 
     public static final String LLMOTOR = "llmotor";
 
-    public static final String WEBCAM_1 = "Webcam_1";
+//    public static final String WEBCAM_1 = "Webcam_1";
 }

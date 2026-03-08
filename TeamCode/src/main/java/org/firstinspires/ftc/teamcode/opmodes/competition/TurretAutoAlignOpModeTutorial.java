@@ -182,16 +182,20 @@ public class TurretAutoAlignOpModeTutorial extends LinearOpMode {
             boolean currentXState = gamepad1.x;
             if (currentXState && !previousXState) {
                 isOuttakeMotorOn = !isOuttakeMotorOn;
-
                 if (isOuttakeMotorOn) {
                     shooterSubsystem.setMaxRPM((int) Math.round(turret.getShootRPM()));
-                    shooterSubsystem.spinup();
-                    if (shooterSubsystem.isRPMReached())
-                    light.setPosition(0.5);
-                } else {
-                    shooterSubsystem.stopShooter();
+                    if (shooterSubsystem.spinup()) {
+                        if (shooterSubsystem.spinup()) {
+                            light.setPosition(0.5);
+                        } else {
+                            light.setPosition(0.27);
+                        }
+                        } else {
+                            shooterSubsystem.stopShooter();
+                            light.setPosition(0.27);
+                        }
+                    }
                 }
-            }
             previousXState = currentXState;
 
             // ---------------- SORTER CONTROL ----------------
