@@ -32,6 +32,8 @@ package org.firstinspires.ftc.teamcode;
 
 //laser is in i2c control hub 2 and imu is in 0
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
 public class Specifications {
     public static final String FTLF_MOTOR = "lf";
     public static final String FTRT_MOTOR = "rf";
@@ -53,11 +55,14 @@ public class Specifications {
     public static final String HOOD = "hood";
 
     public static final String GATE = "gate";
-    public static final String LIGHT = "light";
 
     public static final String SORTER = "sorter";
 
     public static final String PUSHER = "pusher";
 
     public static final String TURRET = "turret";
-} public static final String LLMOTOR = "llmotor";
+
+    public static final String LLMOTOR = "llmotor";
+
+    public static final String WEBCAM_1 = "Webcam_1";
+}
