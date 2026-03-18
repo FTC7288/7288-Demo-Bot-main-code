@@ -35,13 +35,16 @@ public class PinpointOdometry extends SubsystemBase {
         pinpointDriver = RobotContainer.ActiveOpMode.hardwareMap.get(GoBildaPinpointDriver.class, "PinpointDriver");
 
         // Set encoder directions
-        pinpointDriver.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        pinpointDriver.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
         // Set encoder resolution
         pinpointDriver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
 
-        // set x and y offset from centre
-        pinpointDriver.setOffsets(-152.0,-70.0, DistanceUnit.MM);
+        // set x and y offset from center
+        // Note: Mar 17/2026 KN:
+        // x-offset +ve for left of center
+        // y-offset is negative for back(behind) of center
+        pinpointDriver.setOffsets(+50.0,-70.0, DistanceUnit.MM);
 
         // Reset pinpoint driver
         pinpointDriver.resetPosAndIMU();

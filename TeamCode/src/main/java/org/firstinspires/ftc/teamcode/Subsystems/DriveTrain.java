@@ -74,10 +74,16 @@ public class DriveTrain extends SubsystemBase {
         rightBackDrive = RobotContainer.ActiveOpMode.hardwareMap.get(DcMotorEx.class, "rightBackDrive");
 
         // With the shift to DcMotorEx, Inverted function shifted to setDirection.
-        leftFrontDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        //leftFrontDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        //leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        //rightFrontDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        //rightBackDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+
 
         // set motor to closed-loop speed control mode
         leftFrontDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);

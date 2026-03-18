@@ -8,12 +8,14 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
+import com.bylazar.panels.Panels;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Commands.ManualDrive;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.Subsystems.Gyro;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.Odometry;
 import org.firstinspires.ftc.teamcode.Subsystems.PinpointOdometry;
 import org.firstinspires.ftc.teamcode.Subsystems.Telemetry;
@@ -46,6 +48,7 @@ public class RobotContainer {
     public static PinpointOdometry odometryPod;
     public static Odometry odometry;
     public static DriveTrain drivesystem;
+    public static IntakeSubsystem intake;
 
     // Angle of the robot at the start of auto
     public static double RedStartAngle = 90;
@@ -90,7 +93,7 @@ public class RobotContainer {
         timer.reset();
 
         // set up dashboard and various telemetries
-        // Panels = new Panels();
+        //Panels = new Panels();
         telemetrySubsystem = new Telemetry();
 
         // cancel any commands previously running by scheduler
@@ -105,7 +108,7 @@ public class RobotContainer {
         odometryPod = new PinpointOdometry();
         odometry = new Odometry();
         drivesystem = new DriveTrain();
-
+        intake = new IntakeSubsystem();
     }
 
     /**Robot initialization for teleop - This runs once at initialization of teleop*/
@@ -127,6 +130,13 @@ public class RobotContainer {
         driverOp.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(new InstantCommand(()-> odometry.setCurrentPos
                 (AutoFunctions.redVsBlue(new Pose2d(0.0, 0.0, new Rotation2d(Math.toRadians(-90.0)))))));
 
+        // intake test
+        driverOp.getGamepadButton(GamepadKeys.Button.A).whenPressed(
+                new InstantCommand(()->intake.intakeSetSpeed(100.0) )
+        );
+        driverOp.getGamepadButton(GamepadKeys.Button.A).whenReleased(
+                new InstantCommand(()->intake.intakeSetSpeed(0.0) )
+        );
 
 
         //      -------------------------- Examples --------------------------
