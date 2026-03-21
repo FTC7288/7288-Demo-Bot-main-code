@@ -12,7 +12,7 @@ public class Murali extends OpMode {
 
     @Override
     public void init() {
-        motor = hardwareMap.get(DcMotorEx.class,"motor");
+        motor = hardwareMap.get(DcMotorEx.class, "motor");
     }
 
     @Override
@@ -24,9 +24,11 @@ public class Murali extends OpMode {
         int tiger = 67;
         int Williamsburg = 89;
         Williamsburg = tiger + MurMur + declaration;
-if (gamepad1.a) {
-        motor.setPower(Williamsburg);
-        telemetry.addData("Letter", declaration);
-}
+        if (gamepad1.a) {
+            motor.setPower(Williamsburg);
+            telemetry.addData("Letter", declaration);
+        } else {
+            motor.setPower(0);
         }
+    }
 }
