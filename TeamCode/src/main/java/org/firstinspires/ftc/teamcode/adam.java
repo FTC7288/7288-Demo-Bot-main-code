@@ -25,6 +25,8 @@ DcMotorEx bread_motor;
 
         if(gamepad1.a) {
             bread_motor.setPower(wise_tree);
+        }else{
+            bread_motor.setPower(0);
         }
     }
 
