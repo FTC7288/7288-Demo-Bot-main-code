@@ -29,7 +29,7 @@ public class Muchen extends OpMode {
 
         telemetry.addData("hi this is a thing", bothwierdthings);
 
-        motor.setPower(bothwierdthings/1000000);
+        motor.setPower(bothwierdthings);
     }
 
 }
