@@ -2,10 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp
-public class Muchen extends OpMode {
-
+public class Muchen67 extends OpMode {
+    DcMotorEx motor;
     @Override
     public void init() {
         int i = 1;
@@ -13,19 +14,22 @@ public class Muchen extends OpMode {
 
         int sdsd = i + fah;
 
-        telemetry.addData(sdsd);
+        telemetry.addData("yo", sdsd);
+
+        motor = hardwareMap.get(DcMotorEx.class, "motor");
     }
 
     @Override
     public void loop() {
 
-        int wierdthing = 60845;
-        int anotherthingy = 409095;
+        int wierdthing = 49;
+        int anotherthingy = 50;
 
         int bothwierdthings = wierdthing + anotherthingy;
 
         telemetry.addData("hi this is a thing", bothwierdthings);
 
+        motor.setPower(bothwierdthings);
     }
 
 }
