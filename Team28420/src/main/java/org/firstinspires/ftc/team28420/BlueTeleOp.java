@@ -5,11 +5,14 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.team28420.config.CameraConf;
 import org.firstinspires.ftc.team28420.config.GamepadConf;
 import org.firstinspires.ftc.team28420.config.ShooterConf;
 import org.firstinspires.ftc.team28420.module.Actions;
 import org.firstinspires.ftc.team28420.types.AprilTag;
+import org.firstinspires.ftc.team28420.types.MovementParams;
+import org.firstinspires.ftc.team28420.types.PolarVector;
 
 @TeleOp(name = "BLUE MAIN", group = "New Actions")
 public class BlueTeleOp extends LinearOpMode {
@@ -46,7 +49,8 @@ public class BlueTeleOp extends LinearOpMode {
         double y = -1 * act.getCubic(act.withDeathzone(gamepad1.left_stick_y, GamepadConf.LEFT_DEAD_ZONE));
         double rx = act.getCubic(act.withDeathzone(gamepad1.right_stick_x, GamepadConf.RIGHT_DEAD_ZONE));
 
-        act.move(act.getRatios(x, y, rx));
+        act.move(act.getRatios(new MovementParams(
+                new PolarVector(x, y).rotate(act.getRobotAngles().getYaw(AngleUnit.RADIANS)), rx)));
     }
 
     private void indicateReady() {
