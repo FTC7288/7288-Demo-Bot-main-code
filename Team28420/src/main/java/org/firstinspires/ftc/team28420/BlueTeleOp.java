@@ -16,7 +16,6 @@ import org.firstinspires.ftc.team28420.types.PolarVector;
 
 @TeleOp(name = "BLUE MAIN", group = "New Actions")
 public class BlueTeleOp extends LinearOpMode {
-    private final boolean dpad_active = false;
     private Actions act;
     private boolean dpadPressed = false;
 
@@ -100,6 +99,10 @@ public class BlueTeleOp extends LinearOpMode {
         if (gamepad1.dpad_up) act.park();
     }
 
+    private void handleTurret() {
+        act.goTurretToGyroAngle(gamepad2.right_stick_x * 10);
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
@@ -109,10 +112,13 @@ public class BlueTeleOp extends LinearOpMode {
         ShooterConf.TARGET_MOTIF = null;
 
         while (opModeIsActive()) {
+            act.updateLastAngles();
+
             handleTargeting();
             handleMovement();
             handleShooter();
             handleIntakeAndParking();
+            handleTurret();
 
             if (gamepad2.right_bumper) {
                 act.shoot();

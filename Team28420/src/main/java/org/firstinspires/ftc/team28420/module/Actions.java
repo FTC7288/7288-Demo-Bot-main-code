@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.team28420.config.GyroConf;
 import org.firstinspires.ftc.team28420.config.ShooterConf;
@@ -23,7 +24,10 @@ public class Actions {
     private final Camera cam;
     private final Shooter shooter;
     private final Parking parking;
+    private final Turret turret;
     private final Telemetry telemetry;
+
+    private YawPitchRollAngles lastAngles = new YawPitchRollAngles(AngleUnit.RADIANS, 0, 0, 0, 0);
 
     public Actions(HardwareMap hMap, Telemetry telemetry) throws InterruptedException {
         this.mv = new Movement(hMap);
@@ -31,6 +35,7 @@ public class Actions {
         this.cam = new Camera(hMap);
         this.shooter = new Shooter(hMap, telemetry);
         this.parking = new Parking(hMap);
+        this.turret = new Turret(hMap);
         this.telemetry = telemetry;
     }
 
@@ -93,7 +98,11 @@ public class Actions {
     }
 
     public YawPitchRollAngles getRobotAngles() {
-        return imu.getRobotYawPitchRollAngles();
+        return lastAngles;
+    }
+
+    public void updateLastAngles() {
+        lastAngles = imu.getRobotYawPitchRollAngles();
     }
 
     public void move(WheelsRatio<Double> ratio) {
@@ -133,6 +142,10 @@ public class Actions {
         if (detection != null) {
             ShooterConf.TARGET_MOTIF = AprilTag.getMotif(detection.id);
         }
+    }
+
+    public void goTurretToGyroAngle(double offset) {
+        turret.goAngle(-getRobotAngles().getYaw(AngleUnit.RADIANS) + offset);
     }
 
     public double getCubic(double axis) {
