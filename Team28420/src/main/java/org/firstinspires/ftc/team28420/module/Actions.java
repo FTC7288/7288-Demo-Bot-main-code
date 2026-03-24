@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.team28420.config.GyroConf;
 import org.firstinspires.ftc.team28420.config.ShooterConf;
 import org.firstinspires.ftc.team28420.config.WheelBaseConf;
@@ -12,7 +13,6 @@ import org.firstinspires.ftc.team28420.module.shooter.Shooter;
 import org.firstinspires.ftc.team28420.types.AprilTag;
 import org.firstinspires.ftc.team28420.types.MovementParams;
 import org.firstinspires.ftc.team28420.types.PolarVector;
-import org.firstinspires.ftc.team28420.types.Position;
 import org.firstinspires.ftc.team28420.types.WheelsRatio;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
@@ -92,26 +92,34 @@ public class Actions {
         return shooter.isShootable();
     }
 
+    public YawPitchRollAngles getRobotAngles() {
+        return imu.getRobotYawPitchRollAngles();
+    }
+
     public void move(WheelsRatio<Double> ratio) {
         mv.setMotorsVelocityRatiosWithAcceleration(ratio, WheelBaseConf.MAX_VELOCITY);
     }
 
-    public WheelsRatio<Double> getRatios(double axisX, double axisY, double axisR) {
-        return Movement.vectorToRatios(PolarVector.fromPos(new Position(axisX, axisY)), axisR);
+    public WheelsRatio<Double> getRatios(MovementParams params) {
+        return Movement.vectorToRatios(params);
+    }
+
+    public WheelsRatio<Double> getRatios(double x, double y, double rx) {
+        return Movement.vectorToRatios(new MovementParams(new PolarVector(x, y), rx));
     }
 
     public WheelsRatio<Double> getRatiosForApriltag(AprilTag tag, double offsetX, double offsetY) {
         cam.updateApriltags();
         AprilTagDetection detection = cam.getAprilTagDetection(tag);
         MovementParams params = cam.getMovementParamsToPoint(detection, offsetX, offsetY);
-        return Movement.vectorToRatios(params.getMoveVector(), params.getTurnAbs());
+        return Movement.vectorToRatios(params);
     }
 
     public WheelsRatio<Double> getRatiosLookApriltag(AprilTag tag, double offsetX, double offsetY) {
         cam.updateApriltags();
         AprilTagDetection detection = cam.getAprilTagDetection(tag);
         MovementParams params = cam.getMovementParamsToOffset(detection, offsetX, offsetY);
-        return Movement.vectorToRatios(params.getMoveVector(), params.getTurnAbs());
+        return Movement.vectorToRatios(params);
     }
 
     public void park() {

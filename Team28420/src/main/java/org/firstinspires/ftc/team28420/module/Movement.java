@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.team28420.config.WheelBaseConf;
+import org.firstinspires.ftc.team28420.types.MovementParams;
 import org.firstinspires.ftc.team28420.types.PolarVector;
 import org.firstinspires.ftc.team28420.types.WheelsRatio;
 
@@ -15,21 +16,21 @@ public class Movement {
     private double currentLB = 0.0;
     private double currentRB = 0.0;
 
-        public static WheelsRatio<Double> vectorToRatios(PolarVector vector, double turn) {
-        double sin = Math.sin(vector.getTheta() - Math.PI / 4);
-        double cos = Math.cos(vector.getTheta() - Math.PI / 4);
+    public static WheelsRatio<Double> vectorToRatios(MovementParams params) {
+        double sin = Math.sin(params.getMoveVector().getTheta() - Math.PI / 4);
+        double cos = Math.cos(params.getMoveVector().getTheta() - Math.PI / 4);
         double max = Math.max(Math.abs(sin), Math.abs(cos));
 
-        double lf = vector.getAbs() * cos / max + turn;
-        double rf = vector.getAbs() * sin / max - turn;
-        double lb = vector.getAbs() * sin / max + turn;
-        double rb = vector.getAbs() * cos / max - turn;
+        double lf = params.getMoveVector().getAbs() * cos / max + params.getTurnAbs();
+        double rf = params.getMoveVector().getAbs() * sin / max - params.getTurnAbs();
+        double lb = params.getMoveVector().getAbs() * sin / max + params.getTurnAbs();
+        double rb = params.getMoveVector().getAbs() * cos / max - params.getTurnAbs();
 
-        if ((vector.getAbs() + Math.abs(turn)) > 1) {
-            lf /= vector.getAbs() + Math.abs(turn);
-            rf /= vector.getAbs() + Math.abs(turn);
-            lb /= vector.getAbs() + Math.abs(turn);
-            rb /= vector.getAbs() + Math.abs(turn);
+        if ((params.getMoveVector().getAbs() + Math.abs(params.getTurnAbs())) > 1) {
+            lf /= params.getMoveVector().getAbs() + Math.abs(params.getTurnAbs());
+            rf /= params.getMoveVector().getAbs() + Math.abs(params.getTurnAbs());
+            lb /= params.getMoveVector().getAbs() + Math.abs(params.getTurnAbs());
+            rb /= params.getMoveVector().getAbs() + Math.abs(params.getTurnAbs());
         }
 
         return new WheelsRatio<>(lf, rf, lb, rb);
