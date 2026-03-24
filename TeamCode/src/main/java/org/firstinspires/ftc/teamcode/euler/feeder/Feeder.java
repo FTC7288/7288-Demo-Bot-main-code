@@ -38,6 +38,10 @@ public class Feeder {
 
     private void setTarget(FeederInternalState state, double position) {
         if (this.internalState != state) {
+            // ici on voit que internalState et targetPosition vont de pair
+            // il est donc dangereux d'avoir ces 2 variables séparée
+            // soit on determine internalState en fonction de la position du servo (getPosition)
+            // soit on stock dans l'enum InternalState la position
             this.internalState = state;
             this.targetPosition = position;
             this.moveStartTime = timer.milliseconds();
