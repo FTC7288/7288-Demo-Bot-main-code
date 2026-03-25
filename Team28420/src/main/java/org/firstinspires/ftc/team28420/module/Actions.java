@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.team28420.config.GyroConf;
 import org.firstinspires.ftc.team28420.config.ShooterConf;
@@ -16,6 +17,9 @@ import org.firstinspires.ftc.team28420.types.PolarVector;
 import org.firstinspires.ftc.team28420.types.WheelsRatio;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Actions {
 
     private final Movement mv;
@@ -23,7 +27,10 @@ public class Actions {
     private final Camera cam;
     private final Shooter shooter;
     private final Parking parking;
+    private final Turret turret;
     private final Telemetry telemetry;
+
+    private YawPitchRollAngles lastAngles = new YawPitchRollAngles(AngleUnit.RADIANS, 0, 0, 0, 0);
 
     public Actions(HardwareMap hMap, Telemetry telemetry) throws InterruptedException {
         this.mv = new Movement(hMap);
@@ -31,17 +38,16 @@ public class Actions {
         this.cam = new Camera(hMap);
         this.shooter = new Shooter(hMap, telemetry);
         this.parking = new Parking(hMap);
+        this.turret = new Turret(hMap);
         this.telemetry = telemetry;
     }
 
     public void init() {
         mv.setup();
-        imu.initialize(new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                        RevHubOrientationOnRobot.UsbFacingDirection.UP)));
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP)));
         shooter.setup();
         parking.setup();
+        imu.resetYaw();
     }
 
     public void updateShooter() {
@@ -93,7 +99,11 @@ public class Actions {
     }
 
     public YawPitchRollAngles getRobotAngles() {
-        return imu.getRobotYawPitchRollAngles();
+        return lastAngles;
+    }
+
+    public void updateLastAngles() {
+        lastAngles = imu.getRobotYawPitchRollAngles();
     }
 
     public void move(WheelsRatio<Double> ratio) {
@@ -108,15 +118,17 @@ public class Actions {
         return Movement.vectorToRatios(new MovementParams(new PolarVector(x, y), rx));
     }
 
-    public WheelsRatio<Double> getRatiosForApriltag(AprilTag tag, double offsetX, double offsetY) {
+    public void updateApriltags() {
         cam.updateApriltags();
+    }
+
+    public WheelsRatio<Double> getRatiosForApriltag(AprilTag tag, double offsetX, double offsetY) {
         AprilTagDetection detection = cam.getAprilTagDetection(tag);
         MovementParams params = cam.getMovementParamsToPoint(detection, offsetX, offsetY);
         return Movement.vectorToRatios(params);
     }
 
     public WheelsRatio<Double> getRatiosLookApriltag(AprilTag tag, double offsetX, double offsetY) {
-        cam.updateApriltags();
         AprilTagDetection detection = cam.getAprilTagDetection(tag);
         MovementParams params = cam.getMovementParamsToOffset(detection, offsetX, offsetY);
         return Movement.vectorToRatios(params);
@@ -127,12 +139,22 @@ public class Actions {
     }
 
     public void setMotif() {
-        cam.updateApriltags();
-
         AprilTagDetection detection = cam.getAprilTagDetection(AprilTag.GREEN);
         if (detection != null) {
             ShooterConf.TARGET_MOTIF = AprilTag.getMotif(detection.id);
         }
+    }
+
+    public void goTurretToAprilTag(AprilTag tag, double offset) {
+        AprilTagDetection detection = cam.getAprilTagDetection(tag);
+        if (detection == null) {
+            return;
+        }
+        turret.goAngle(- detection.ftcPose.yaw + offset);
+    }
+
+    public void goTurretToGyroAngle(double offset) {
+        turret.goAngle(- getRobotAngles().getYaw(AngleUnit.RADIANS) + offset);
     }
 
     public double getCubic(double axis) {
@@ -146,5 +168,6 @@ public class Actions {
     public void log() {
         cam.log(telemetry);
         shooter.log(telemetry);
+        telemetry.addData("yaw", getRobotAngles().getYaw(AngleUnit.RADIANS));
     }
 }

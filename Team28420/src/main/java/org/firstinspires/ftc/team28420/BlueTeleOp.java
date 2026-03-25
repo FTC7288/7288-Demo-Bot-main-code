@@ -9,14 +9,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.team28420.config.CameraConf;
 import org.firstinspires.ftc.team28420.config.GamepadConf;
 import org.firstinspires.ftc.team28420.config.ShooterConf;
+import org.firstinspires.ftc.team28420.config.WheelBaseConf;
 import org.firstinspires.ftc.team28420.module.Actions;
 import org.firstinspires.ftc.team28420.types.AprilTag;
 import org.firstinspires.ftc.team28420.types.MovementParams;
 import org.firstinspires.ftc.team28420.types.PolarVector;
+import org.firstinspires.ftc.team28420.types.Position;
+import org.firstinspires.ftc.team28420.types.WheelsRatio;
 
 @TeleOp(name = "BLUE MAIN", group = "New Actions")
 public class BlueTeleOp extends LinearOpMode {
-    private final boolean dpad_active = false;
     private Actions act;
     private boolean dpadPressed = false;
 
@@ -46,11 +48,13 @@ public class BlueTeleOp extends LinearOpMode {
 
     private void manualDrive() {
         double x = act.getCubic(act.withDeathzone(gamepad1.left_stick_x, GamepadConf.LEFT_DEAD_ZONE));
-        double y = -1 * act.getCubic(act.withDeathzone(gamepad1.left_stick_y, GamepadConf.LEFT_DEAD_ZONE));
+        double y = act.getCubic(act.withDeathzone(gamepad1.left_stick_y, GamepadConf.LEFT_DEAD_ZONE));
         double rx = act.getCubic(act.withDeathzone(gamepad1.right_stick_x, GamepadConf.RIGHT_DEAD_ZONE));
 
-        act.move(act.getRatios(new MovementParams(
-                new PolarVector(x, y).rotate(act.getRobotAngles().getYaw(AngleUnit.RADIANS)), rx)));
+        WheelsRatio<Double> ratios = act.getRatios(new MovementParams(
+                new PolarVector(new Position(x, y)), rx));
+
+        act.move(ratios);
     }
 
     private void indicateReady() {
@@ -101,6 +105,14 @@ public class BlueTeleOp extends LinearOpMode {
         if (gamepad1.dpad_up) act.park();
     }
 
+    private void handleTurret() {
+        if (gamepad2.triangle) {
+            act.goTurretToAprilTag(AprilTag.BLUE, gamepad2.right_stick_x * 10);
+        } else {
+            act.goTurretToGyroAngle(gamepad2.right_stick_x * 10);
+        }
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
@@ -110,10 +122,14 @@ public class BlueTeleOp extends LinearOpMode {
         ShooterConf.TARGET_MOTIF = null;
 
         while (opModeIsActive()) {
+            act.updateLastAngles();
+            act.updateApriltags();
+
             handleTargeting();
             handleMovement();
             handleShooter();
             handleIntakeAndParking();
+            handleTurret();
 
             if (gamepad2.right_bumper) {
                 act.shoot();
