@@ -81,8 +81,8 @@ public class BlueTeleOp extends LinearOpMode {
 
     private void handleRevolverInput() {
         if (!dpadPressed) {
-            if (gamepad2.dpad_left) rotateRevolver(-60);
-            if (gamepad2.dpad_right) rotateRevolver(60);
+            if (gamepad2.dpad_left) rotateRevolver(-120);
+            if (gamepad2.dpad_right) rotateRevolver(120);
             if (gamepad2.dpad_up) rotateRevolver(-2);
             if (gamepad2.dpad_down) rotateRevolver(2);
         }
@@ -94,7 +94,8 @@ public class BlueTeleOp extends LinearOpMode {
             float power = (gamepad1.left_trigger > 0.5) ? -0.5f : 1.0f;
             act.setDribblerVelocityCoefficient(power);
         } else {
-            act.setDribblerVelocityCoefficient(0);
+            if(gamepad2.right_trigger < 0.4)
+                act.setDribblerVelocityCoefficient(0);
         }
 
         if (gamepad1.dpad_up) act.park();

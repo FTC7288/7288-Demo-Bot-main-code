@@ -12,13 +12,13 @@ public class ShooterConf {
     public static Scalar cshighPurple = new Scalar(240, 0.6, 0.04);
     public static double SCANNED_BALL_MS = 70;
     public static String TARGET_MOTIF = null;
-    public static double SORT_MOTOR_POWER = 0.5;
+    public static double SORT_MOTOR_POWER = 0.35;
     public static double BALL_DETECTION_THRESHOLD = 4;
     public static double SHOOTER_F = 15;
     public static double SHOOTER_I = 0;
     public static double SHOOTER_P = 11;
     public static double SHOOTER_D = 2;
-    public static int VELOCITY = 800;
+    public static int VELOCITY = 1200;
     public static int DRIBBLER_VELOCITY = 2800;
-    public static double SORT_MOTOR_TICKS_PER_TURN = 1430.0;
+    public static double SORT_MOTOR_TICKS_PER_TURN = 1428.0;
 }
