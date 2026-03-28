@@ -11,5 +11,5 @@ public class WheelBaseConf {
     public final static double TICKS_PER_REV = 560.0;
     public final static double TICKS_PER_INCH = TICKS_PER_REV / (WHEEL_DIAMETER_INCHES * Math.PI);
     public final static int MAX_VELOCITY = 3600;
-    public final static double ACCELERATION = 250.0;
+    public final static double ACCELERATION = 400.0;
 }

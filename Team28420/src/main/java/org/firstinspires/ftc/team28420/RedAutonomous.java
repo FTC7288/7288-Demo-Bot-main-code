@@ -9,8 +9,8 @@ import org.firstinspires.ftc.team28420.config.ShooterConf;
 import org.firstinspires.ftc.team28420.module.Actions;
 import org.firstinspires.ftc.team28420.types.AprilTag;
 
-@Autonomous(name = "auto main BLUE", group = "MAIN")
-public class BlueAutonomous extends LinearOpMode {
+@Autonomous(name = "auto main RED", group = "MAIN")
+public class RedAutonomous extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -40,15 +40,15 @@ public class BlueAutonomous extends LinearOpMode {
                 act.setMotif();
                 act.alignRevolverToTarget();
             } else if (elapsedTime.milliseconds() > 1500 && elapsedTime.milliseconds() <= 2200) {
-                act.move(act.getRatios(0, 0, act.getForceToGyro(-Math.PI / 5)));
+                act.move(act.getRatios(0, 0, act.getForceToGyro(Math.PI / 5)));
             } else if (elapsedTime.milliseconds() <= 5700) {
-                act.move(act.getRatiosForApriltag(AprilTag.BLUE, 0, CameraConf.RANGE_TO_TAG));
+                act.move(act.getRatiosForApriltag(AprilTag.RED, 0, CameraConf.RANGE_TO_TAG));
             } else if (elapsedTime.milliseconds() <= 11000) {
                 act.move(act.getRatios(0, 0, 0));
             } else if (elapsedTime.milliseconds() <= 13500) {
-                act.move(act.getRatiosForApriltag(AprilTag.BLUE, 0.30, CameraConf.RANGE_TO_TAG - 0.1));
+                act.move(act.getRatiosForApriltag(AprilTag.RED, -0.30, CameraConf.RANGE_TO_TAG - 0.1));
             } else if (elapsedTime.milliseconds() <= 16000) {
-                act.move(act.getRatios(0, 0, act.getForceToGyro(-Math.PI / 2)));
+                act.move(act.getRatios(0, 0, act.getForceToGyro(Math.PI / 2)));
             } else if (elapsedTime.milliseconds() <= 20000) {
                 act.camPeek();
                 act.setScanAllowed(true);
@@ -58,9 +58,9 @@ public class BlueAutonomous extends LinearOpMode {
                 act.setScanAllowed(false);
                 act.move(act.getRatios(0, -0.5, 0));
             } else if (elapsedTime.milliseconds() <= 21500) {
-                act.move(act.getRatios(0, 0, act.getForceToGyro(-Math.PI / 5)));
+                act.move(act.getRatios(0, 0, act.getForceToGyro(Math.PI / 5)));
             } else if (elapsedTime.milliseconds() <= 23500) {
-                act.move(act.getRatiosLookApriltag(AprilTag.BLUE, 0.05, 0));
+                act.move(act.getRatiosLookApriltag(AprilTag.RED, 0.05, 0));
             } else if (elapsedTime.milliseconds() <= 25500){
                 act.move(act.getRatios(0, 0, 0));
             } else if (elapsedTime.milliseconds() <= 26000) {

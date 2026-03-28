@@ -19,8 +19,10 @@ import org.firstinspires.ftc.team28420.processors.BallDetection;
 import org.firstinspires.ftc.team28420.types.AprilTag;
 import org.firstinspires.ftc.team28420.types.MovementParams;
 import org.firstinspires.ftc.team28420.types.PolarVector;
+import org.firstinspires.ftc.team28420.types.Position;
 import org.firstinspires.ftc.team28420.types.WheelsRatio;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
 import java.nio.charset.CharacterCodingException;
@@ -42,7 +44,7 @@ public class Actions {
     public Actions(HardwareMap hMap, Telemetry telemetry) throws InterruptedException {
         this.mv = new Movement(hMap);
         this.imu = hMap.get(IMU.class, GyroConf.IMU);
-        this.ballDetection = new BallDetection();
+        this.ballDetection = null;
         this.cam = new Camera(hMap, ballDetection);
         this.shooter = new Shooter(hMap, telemetry);
         this.cameraServo = hMap.get(Servo.class, "cameraServo");
@@ -56,7 +58,6 @@ public class Actions {
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP)));
         shooter.setup();
         parking.setup();
-        imu.resetYaw();
         camIdle();
     }
     public void camPeek() {
@@ -92,6 +93,7 @@ public class Actions {
 
     public void afterStart() {
         shooter.afterStart();
+        imu.resetYaw();
     }
 
     public boolean shoot() {
@@ -138,7 +140,7 @@ public class Actions {
     }
 
     public WheelsRatio<Double> getRatios(double x, double y, double rx) {
-        return Movement.vectorToRatios(new MovementParams(new PolarVector(x, y), rx));
+        return Movement.vectorToRatios(new MovementParams(new PolarVector(new Position(x, y)), rx));
     }
 
     public void updateApriltags() {
@@ -180,7 +182,8 @@ public class Actions {
         cam.log(telemetry);
         shooter.log(telemetry);
         telemetry.addData("yaw", getRobotAngles().getYaw(AngleUnit.RADIANS));
-        ballDetection.updateTelemetry(telemetry);
+        if(ballDetection != null)
+            ballDetection.updateTelemetry(telemetry);
     }
 
     public Point getDetectedBallPosition() {
@@ -197,9 +200,17 @@ public class Actions {
         if (ballPos != null) {
             double errorX = ballPos.x - CameraConf.WIDTH/2.0;
             double rx = errorX * BallDetectionConf.kP;
-            move(getRatios(Math.PI / 2, 0.067, rx));
+            move(getRatios(0, 0.067, rx));
         } else {
-            move(getRatios(Math.PI / 2, 0.08, 0));
+            move(getRatios(0, 0.08, 0));
         }
+    }
+
+    public double getForceToGyro(double angle) {
+        return (angle - getRobotAngles().getYaw(AngleUnit.RADIANS)) / Math.PI;
+    }
+
+    public void setScanAllowed(boolean b) {
+        shooter.setScanAllowed(b);
     }
 }

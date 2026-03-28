@@ -40,21 +40,28 @@ public class Camera {
                 .setDrawTagOutline(true)
                 .setOutputUnits(DistanceUnit.METER, AngleUnit.DEGREES)
                 .build();
-
-        visionPortal = new VisionPortal.Builder()
-                .setCamera(webcamName)
-                .addProcessor(aprilTag)
-                .addProcessor(processor)
-                .enableLiveView(true)
-                .setAutoStopLiveView(true)
-                .build();
-
+        if(processor == null) {
+            visionPortal = new VisionPortal.Builder()
+                    .setCamera(webcamName)
+                    .addProcessor(aprilTag)
+                    .enableLiveView(true)
+                    .setAutoStopLiveView(true)
+                    .build();
+        }else {
+            visionPortal = new VisionPortal.Builder()
+                    .setCamera(webcamName)
+                    .addProcessor(aprilTag)
+                    .addProcessor(processor)
+                    .enableLiveView(true)
+                    .setAutoStopLiveView(true)
+                    .build();
+        }
         ElapsedTime timer = new ElapsedTime();
         while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING && timer.seconds() < 3) {
             try { Thread.sleep(20); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         }
 
-        setManualExposure(5, 250);
+        setManualExposure(4, 270);
 
         FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
     }

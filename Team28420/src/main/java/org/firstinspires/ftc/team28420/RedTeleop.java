@@ -1,4 +1,4 @@
- package org.firstinspires.ftc.team28420;
+package org.firstinspires.ftc.team28420;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -15,8 +15,8 @@ import org.firstinspires.ftc.team28420.types.PolarVector;
 import org.firstinspires.ftc.team28420.types.Position;
 import org.firstinspires.ftc.team28420.types.WheelsRatio;
 
- @TeleOp(name = "Auto Motif Intake", group = "New Actions")
-public class BallDetectionTeleOp extends LinearOpMode {
+@TeleOp(name = "teleop main RED", group = "MAIN")
+public class RedTeleop extends LinearOpMode {
     private Actions act;
     private boolean dpadPressed = false;
     private void initialize() throws InterruptedException {
@@ -34,33 +34,29 @@ public class BallDetectionTeleOp extends LinearOpMode {
         telemetry.addData("scanned motif", ShooterConf.TARGET_MOTIF);
     }
     private void handleMovement() {
-        if (gamepad1.circle) {
-            act.setDribblerVelocityCoefficient(1.0f);
-            act.camPeek();
-            act.aimAndDriveToBall();
-        } else if (gamepad1.right_trigger > 0.2) {
+        if (gamepad1.right_trigger > 0.2) {
             act.camIdle();
-            act.move(act.getRatiosForApriltag(AprilTag.BLUE, 0.07, CameraConf.RANGE_TO_TAG));
+            act.move(act.getRatiosForApriltag(AprilTag.RED, 0.07, CameraConf.RANGE_TO_TAG));
         } else if (gamepad1.right_bumper) {
             act.camIdle();
-            act.move(act.getRatiosLookApriltag(AprilTag.BLUE, 0, CameraConf.RANGE_TO_TAG));
+            act.move(act.getRatiosLookApriltag(AprilTag.RED, 0, CameraConf.RANGE_TO_TAG));
         } else {
             manualDrive();
         }
     }
     private void manualDrive() {
+        if (gamepad1.left_stick_button) {
+            act.brake();
+            return;
+        }
+
         double x = act.getCubic(act.withDeathzone(gamepad1.left_stick_x, GamepadConf.LEFT_DEAD_ZONE));
         double y = -act.getCubic(act.withDeathzone(gamepad1.left_stick_y, GamepadConf.LEFT_DEAD_ZONE));
         double rx = act.getCubic(act.withDeathzone(gamepad1.right_stick_x, GamepadConf.RIGHT_DEAD_ZONE));
 
-        if (Math.abs(x) < 0.01 && Math.abs(y) < 0.01 && Math.abs(rx) < 0.01 && gamepad1.left_stick_button) {
-            act.brake();
-        } else {
-            WheelsRatio<Double> ratios = act.getRatios(new MovementParams(
-                    new PolarVector(new Position(x, y)).rotate(-act.getRobotAngles().getYaw(AngleUnit.RADIANS)),
-                    rx));
-            act.move(ratios);
-        }
+        WheelsRatio<Double> ratios = act.getRatios(new MovementParams(
+                new PolarVector(new Position(x, y)), rx));
+        act.move(ratios);
     }
     private void indicateReady() {
         gamepad2.setLedColor(0, 255, 0, -1);
@@ -75,7 +71,7 @@ public class BallDetectionTeleOp extends LinearOpMode {
         handleRevolverInput();
 
         float shooterPower = (float) ((gamepad2.right_trigger > 0.4) ? Math.pow(gamepad2.right_trigger, 2) : 0);
-        shooterPower *= gamepad2.left_bumper ? 1.1 : 1;
+        shooterPower *= gamepad2.left_bumper ? 1.1f : 1;
 
         act.prepareForShoot(shooterPower);
         if (gamepad2.right_bumper) act.shoot();
@@ -89,23 +85,21 @@ public class BallDetectionTeleOp extends LinearOpMode {
         if (!dpadPressed) {
             int shooterMultiplier = gamepad2.right_trigger > 0.2?2:1;
 
-            if (gamepad2.dpad_left) rotateRevolver(-60 * shooterMultiplier);
-            if (gamepad2.dpad_right) rotateRevolver(60 * shooterMultiplier);
+            if (gamepad2.dpad_left) rotateRevolver(60 * shooterMultiplier);
+            if (gamepad2.dpad_right) rotateRevolver(-60 * shooterMultiplier);
         }
         dpadPressed = (gamepad2.dpad_left || gamepad2.dpad_right || gamepad2.dpad_up || gamepad2.dpad_down);
 
-        if (gamepad2.dpad_up) rotateRevolver(-2);
-        if (gamepad2.dpad_down) rotateRevolver(2);
+        if (gamepad2.dpad_up) rotateRevolver(5);
+        if (gamepad2.dpad_down) rotateRevolver(-5);
     }
     private void handleIntakeAndParking() {
-        if (!gamepad1.circle) {
-            if (gamepad1.left_bumper) {
-                float power = (gamepad1.left_trigger > 0.5) ? -0.5f : 1.0f;
-                act.setDribblerVelocityCoefficient(power);
-            } else {
-                if(gamepad2.right_trigger < 0.4)
-                    act.setDribblerVelocityCoefficient(0);
-            }
+        if (gamepad1.left_bumper) {
+            float power = (gamepad1.left_trigger > 0.5) ? -0.5f : 1.0f;
+            act.setDribblerVelocityCoefficient(power);
+        } else {
+            if(gamepad2.right_trigger < 0.4)
+                act.setDribblerVelocityCoefficient(0);
         }
         if (gamepad1.dpad_up) act.park();
     }

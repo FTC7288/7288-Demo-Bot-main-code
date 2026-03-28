@@ -31,6 +31,8 @@ public class Shooter {
     private int globalTarget = 0;
     private ShooterState state = ShooterState.IDLE;
     private boolean manualControl = false;
+
+    private boolean scanAllowed = false;
     private boolean ballPresent = false;
     private boolean potentialBallDetected = false;
     private boolean isUnjamming = false;
@@ -38,6 +40,8 @@ public class Shooter {
     private final ElapsedTime stallTimer = new ElapsedTime();
     private MotifSorter sorter = new MotifSorter();
     private Telemetry telemetry;
+
+    private boolean shot = false;
 
     public Shooter(HardwareMap hMap, Telemetry telemetry) {
         this.left = hMap.get(DcMotorEx.class, "shLeft");
@@ -51,6 +55,9 @@ public class Shooter {
         this.telemetry = telemetry;
     }
 
+    public void setScanAllowed(boolean allowed) {
+        scanAllowed = allowed;
+    }
 
     public void setup() {
         left.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -77,6 +84,7 @@ public class Shooter {
      * for detecting if a motor has actually finished its path.
      */
     private boolean isMotorBusy(DcMotorEx motor) {
+        if (true) return motor.isBusy();
         return Math.abs(motor.getCurrentPosition() - motor.getTargetPosition()) > ShooterConf.BUSY_TOLERANCE_TICKS;
     }
 
@@ -125,18 +133,18 @@ public class Shooter {
     }
 
     public void update() {
-        handleRevolverStall();
+        //handleRevolverStall();
 
         switch (state) {
             case SHOOTING:
-                if (shooterTime.milliseconds() >= 150) {
+                if (shooterTime.milliseconds() >= 225) {
                     pushBall(false);
                     state = Shooter.ShooterState.STOP_SHOOTING;
                     shooterTime.reset();
                 }
                 break;
             case STOP_SHOOTING:
-                if (shooterTime.milliseconds() >= 150) {
+                if (shooterTime.milliseconds() >= 175) {
                     if (manualControl) {
                         rotateRevolver(-120);
                         state = Shooter.ShooterState.IDLE;
@@ -160,7 +168,8 @@ public class Shooter {
         }
     }
     public void sortedNextBall() {
-        if (!revolver.isBusy()) {
+        if (!isMotorBusy(revolver)) {
+
             if (!sorter.getCurMotif().isEmpty()) {
                 sorter.dropLastBall();
 
@@ -178,6 +187,7 @@ public class Shooter {
         revolver.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         revolver.setVelocity(ShooterConf.REVOLVER_VELOCITY);
         state = ShooterState.REVOLVER_TURNING;
+        shot = false;
         stallTimer.reset(); // Reset timer when starting a new movement
     }
 
@@ -214,8 +224,8 @@ public class Shooter {
     }
 
     private void syncTicks() {
-        globalTarget = revolver.getCurrentPosition();
-        revolver.setTargetPosition(globalTarget);
+        globalTarget = 0;
+        revolver.setTargetPosition(0);
     }
 
     private double toRPM(double tps) {
@@ -363,7 +373,7 @@ public class Shooter {
         boolean nearSlot3 = Math.abs(currentAngle - 300) < 5;
 
         boolean isNearSlot =  (nearSlot1 || nearSlot2 || nearSlot3);
-        return isNearSlot;
+        return isNearSlot && !shot;
     }
     public void pushBall(boolean push) {
         if (push) {
@@ -394,6 +404,7 @@ public class Shooter {
     public boolean shoot() {
         if (state == Shooter.ShooterState.IDLE && isShootable()) {
             pushBall(true);
+            shot = true;
             state = ShooterState.SHOOTING;
             shooterTime.reset();
             return true;
@@ -402,7 +413,7 @@ public class Shooter {
     }
 
     private boolean shouldScan() {
-        return !isShootable() && !manualControl && !sorter.isMotifFull();// && ShooterConf.IS_AUTO;
+        return !isShootable() && !manualControl && !sorter.isMotifFull() && scanAllowed;// && ShooterConf.IS_AUTO;
     }
 
     public void appendBallToMotif(char color) {
