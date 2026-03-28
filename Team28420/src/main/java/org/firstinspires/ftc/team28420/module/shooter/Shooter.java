@@ -173,9 +173,9 @@ public class Shooter {
             if (!sorter.getCurMotif().isEmpty()) {
                 sorter.dropLastBall();
 
-                if (!sorter.getCurMotif().isEmpty()) rotateRevolver(-120);
+                if (!sorter.getCurMotif().isEmpty()) rotateRevolver(120);
                 else {
-                    rotateRevolver(-60);
+                    rotateRevolver(60);
                     sorter.setCorrectMotif(false);
                 }
             }
@@ -312,9 +312,8 @@ public class Shooter {
 
     public boolean alignRevolverToTarget() {
         if (ShooterConf.TARGET_MOTIF == null || ShooterConf.TARGET_MOTIF.isEmpty()) return false;
-
         // Default offset is 60 degrees
-        double finalRotationDeg = 60;
+        double finalRotationDeg = isNearShootingSlot()?0:60;
         int moveSlots = sorter.getMoveSlots();
 
         // Add the extra rotation based on the required slots
@@ -364,7 +363,7 @@ public class Shooter {
         return hueMatch && (hsv[1] >= low.val[1] && hsv[1] <= high.val[1]) && (hsv[2] >= low.val[2] && hsv[2] <= high.val[2]);
     }
 
-    public boolean isShootable() {
+    public boolean isNearShootingSlot() {
         double currentAngle = currentAngle() % 360;
         if (currentAngle < 0) currentAngle += 360;
 
@@ -373,7 +372,12 @@ public class Shooter {
         boolean nearSlot3 = Math.abs(currentAngle - 300) < 5;
 
         boolean isNearSlot =  (nearSlot1 || nearSlot2 || nearSlot3);
-        return isNearSlot && !shot;
+        return isNearSlot;
+    }
+
+    public boolean isShootable() {
+
+        return isNearShootingSlot() && !shot;
     }
     public void pushBall(boolean push) {
         if (push) {

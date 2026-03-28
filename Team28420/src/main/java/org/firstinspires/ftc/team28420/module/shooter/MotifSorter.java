@@ -41,6 +41,7 @@ public class MotifSorter {
 
     // GETTERS
     public int getMoveSlots() {
+        if(ShooterConf.TARGET_MOTIF == null) return 0;
         int currentIndex = sortSeqMap.getOrDefault(curMotif, 0);
         int targetIndex = sortSeqMap.getOrDefault(ShooterConf.TARGET_MOTIF, 0);
 

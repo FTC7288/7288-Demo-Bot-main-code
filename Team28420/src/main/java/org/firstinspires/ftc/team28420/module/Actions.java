@@ -41,10 +41,13 @@ public class Actions {
 
     private YawPitchRollAngles lastAngles = new YawPitchRollAngles(AngleUnit.RADIANS, 0, 0, 0, 0);
 
-    public Actions(HardwareMap hMap, Telemetry telemetry) throws InterruptedException {
+    public Actions(HardwareMap hMap, boolean isAuto, Telemetry telemetry) throws InterruptedException {
         this.mv = new Movement(hMap);
         this.imu = hMap.get(IMU.class, GyroConf.IMU);
-        this.ballDetection = null;
+        if(isAuto)
+            this.ballDetection = new BallDetection();
+        else
+            this.ballDetection = null;
         this.cam = new Camera(hMap, ballDetection);
         this.shooter = new Shooter(hMap, telemetry);
         this.cameraServo = hMap.get(Servo.class, "cameraServo");
@@ -55,7 +58,7 @@ public class Actions {
 
     public void init() {
         mv.setup();
-        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP)));
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(GyroConf.logoFacingDirection, GyroConf.usbFacingDirection)));
         shooter.setup();
         parking.setup();
         camIdle();
@@ -93,7 +96,6 @@ public class Actions {
 
     public void afterStart() {
         shooter.afterStart();
-        imu.resetYaw();
     }
 
     public boolean shoot() {
@@ -207,10 +209,15 @@ public class Actions {
     }
 
     public double getForceToGyro(double angle) {
-        return (angle - getRobotAngles().getYaw(AngleUnit.RADIANS)) / Math.PI;
+        telemetry.addData("rotate force", (getRobotAngles().getYaw(AngleUnit.RADIANS) - angle) / Math.PI);
+        return (getRobotAngles().getYaw(AngleUnit.RADIANS) - angle) / Math.PI;
     }
 
     public void setScanAllowed(boolean b) {
         shooter.setScanAllowed(b);
+    }
+
+    public void resetYaw() {
+        imu.resetYaw();
     }
 }

@@ -21,7 +21,7 @@ public class BlueTeleop extends LinearOpMode {
     private boolean dpadPressed = false;
     private void initialize() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        act = new Actions(hardwareMap, telemetry);
+        act = new Actions(hardwareMap, false, telemetry);
 
         ShooterConf.IS_AUTO = false;
 
