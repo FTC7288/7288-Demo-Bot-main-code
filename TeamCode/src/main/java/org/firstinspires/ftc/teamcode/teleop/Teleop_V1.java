@@ -31,7 +31,7 @@ public class Teleop_V1 extends OpMode {
     public void loop() {
         double axial = gamepad1.left_stick_y;
         double lateral = gamepad1.left_stick_x;
-        double yaw = gamepad1.right_stick_x;
+        double yaw = -gamepad1.right_stick_x;
 
         frontLeftDrive.setPower((axial + lateral + yaw) * 0.5);
         backLeftDrive.setPower((axial - lateral - yaw) * 0.50);
