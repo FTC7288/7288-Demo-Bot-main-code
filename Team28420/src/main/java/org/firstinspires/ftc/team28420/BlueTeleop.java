@@ -122,6 +122,7 @@ public class BlueTeleop extends LinearOpMode {
             handleIntakeAndParking();
             act.updateShooter();
             act.log();
+            act.clearCache();
             telemetry.update();
         }
     }

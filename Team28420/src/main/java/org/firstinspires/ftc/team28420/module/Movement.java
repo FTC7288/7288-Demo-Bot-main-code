@@ -89,31 +89,6 @@ public class Movement {
         leftBack.setVelocity(wheelsRatio.getLeftBottom() * velocityMult);
         rightBack.setVelocity(wheelsRatio.getRightBottom() * velocityMult);
     }
-    
-    public void setMotorsVelocityRatiosWithAcceleration(WheelsRatio<Double> wheelsRatio, int velocityMult) {
-        double targetLF = wheelsRatio.getLeftTop() * velocityMult;
-        double targetRF = wheelsRatio.getRightTop() * velocityMult;
-        double targetLB = wheelsRatio.getLeftBottom() * velocityMult;
-        double targetRB = wheelsRatio.getRightBottom() * velocityMult;
-        
-        currentLF = accelerate(currentLF, targetLF);
-        currentRF = accelerate(currentRF, targetRF);
-        currentLB = accelerate(currentLB, targetLB);
-        currentRB = accelerate(currentRB, targetRB);
-        
-        leftFront.setVelocity(currentLF);
-        rightFront.setVelocity(currentRF);
-        leftBack.setVelocity(currentLB);
-        rightBack.setVelocity(currentRB);
-    }
-    
-    private double accelerate(double current, double target) {
-        double difference = target - current;
-        if (Math.abs(difference) <= WheelBaseConf.ACCELERATION) {
-            return target;
-        }
-        return current + Math.signum(difference) * WheelBaseConf.ACCELERATION;
-    }
 
     public void brake() {
         setMotorsPowerRatios(WheelsRatio.ZERO);

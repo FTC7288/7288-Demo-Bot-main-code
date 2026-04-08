@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team28420.module;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -26,6 +27,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
 import java.nio.charset.CharacterCodingException;
+import java.util.List;
 
 public class Actions {
 
@@ -40,6 +42,7 @@ public class Actions {
     private final Telemetry telemetry;
 
     private YawPitchRollAngles lastAngles = new YawPitchRollAngles(AngleUnit.RADIANS, 0, 0, 0, 0);
+    private List<LynxModule> allHubs;
 
     public Actions(HardwareMap hMap, boolean isAuto, Telemetry telemetry) throws InterruptedException {
         this.mv = new Movement(hMap);
@@ -52,8 +55,8 @@ public class Actions {
         this.shooter = new Shooter(hMap, telemetry);
         this.cameraServo = hMap.get(Servo.class, "cameraServo");
         this.parking = new Parking(hMap);
+        allHubs = hMap.getAll(LynxModule.class);
         this.telemetry = telemetry;
-
     }
 
     public void init() {
@@ -62,7 +65,11 @@ public class Actions {
         shooter.setup();
         parking.setup();
         camIdle();
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
     }
+
     public void camPeek() {
         cameraServo.setPosition(CameraServoConf.PEEK_POS);
     }
@@ -134,7 +141,7 @@ public class Actions {
     }
 
     public void move(WheelsRatio<Double> ratio) {
-        mv.setMotorsVelocityRatiosWithAcceleration(ratio, WheelBaseConf.MAX_VELOCITY);
+        mv.setMotorsVelocityRatios(ratio, WheelBaseConf.MAX_VELOCITY);
     }
 
     public WheelsRatio<Double> getRatios(MovementParams params) {
@@ -219,5 +226,11 @@ public class Actions {
 
     public void resetYaw() {
         imu.resetYaw();
+    }
+
+    public void clearCache() {
+        for (LynxModule hub : allHubs) {
+            hub.clearBulkCache();
+        }
     }
 }
