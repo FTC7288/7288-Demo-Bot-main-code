@@ -109,6 +109,10 @@ public class Actions {
         return shooter.shoot();
     }
 
+    public boolean shootBySpin() {
+        return shooter.shootBySpin();
+    }
+
     public void revolverRotate(double deg) {
         shooter.rotateRevolver(deg);
         shooter.toggleManualControl(true);

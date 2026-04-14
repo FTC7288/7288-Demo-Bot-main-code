@@ -28,7 +28,7 @@ public class Shooter {
     private final ElapsedTime debounceTimer = new ElapsedTime();
     private final Dribbler dribbler;
     private final Pusher pusher;
-    private int globalTarget = 0;
+    private double globalTarget = 0;
     private ShooterState state = ShooterState.IDLE;
     private boolean manualControl = false;
 
@@ -102,14 +102,13 @@ public class Shooter {
                 if (stallTimer.seconds() > ShooterConf.STALL_TIMEOUT_SEC) {
                     // JAM DETECTED
                     isUnjamming = true;
-                    originalTargetBeforeJam = globalTarget;
+                    originalTargetBeforeJam = (int) globalTarget;
 
                     double dir =Math.signum(revolver.getVelocity());
-
                     // Back up slightly (e.g., 45 degrees) to clear the jam
                     // We use a relative move from CURRENT position, not global target
                     globalTarget = revolver.getCurrentPosition() - (int)(60.0 * dir * ShooterConf.SORT_MOTOR_TICKS_PER_TURN / 360.0);
-                    revolver.setTargetPosition(globalTarget);
+                    revolver.setTargetPosition((int) globalTarget);
                     revolver.setVelocity(ShooterConf.REVOLVER_VELOCITY);
                 }
             } else {
@@ -124,7 +123,7 @@ public class Shooter {
             isUnjamming = false;
             // Resume original target
             globalTarget = originalTargetBeforeJam;
-            revolver.setTargetPosition(globalTarget);
+            revolver.setTargetPosition((int) globalTarget);
             revolver.setVelocity(ShooterConf.REVOLVER_VELOCITY);
         }
 
@@ -161,6 +160,15 @@ public class Shooter {
                 }
                 break;
 
+            case SPIN_SHOOTING:
+                if (shooterTime.milliseconds() >= ShooterConf.SPIN_SHOOT_MS) {
+                    sortedNextBall();
+                    //возвращение нормальной скорости сортировки
+                    revolver.setVelocity(ShooterConf.REVOLVER_VELOCITY);
+                    shooterTime.reset();
+                }
+                break;
+
             case IDLE:
                 if (shouldScan()) scanBall();
                 break;
@@ -178,8 +186,8 @@ public class Shooter {
         } else shot = false;
     }
     public void rotateRevolver(double deg) {
-        globalTarget += (int) (deg * ShooterConf.SORT_MOTOR_TICKS_PER_TURN / 360.0);
-        revolver.setTargetPosition(globalTarget);
+        globalTarget += deg * ShooterConf.SORT_MOTOR_TICKS_PER_TURN / 360.0;
+        revolver.setTargetPosition((int) globalTarget);
         revolver.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         revolver.setVelocity(ShooterConf.REVOLVER_VELOCITY);
         state = ShooterState.REVOLVER_TURNING;
@@ -246,7 +254,7 @@ public class Shooter {
 
         globalTarget = (int) (Math.round((globalTarget - offsetTicks) / ticksPerSlot) * ticksPerSlot + offsetTicks);
 
-        revolver.setTargetPosition(globalTarget);
+        revolver.setTargetPosition((int) globalTarget);
         revolver.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         revolver.setVelocity(ShooterConf.REVOLVER_VELOCITY);
     }
@@ -400,6 +408,17 @@ public class Shooter {
         right.setVelocity(desired);
     }
 
+    public boolean shootBySpin() {
+        if (state == ShooterState.IDLE && isShootable()) {
+            revolver.setVelocity(ShooterConf.SPIN_SHOOT_VELOCITY);
+            shot = true;
+            state = ShooterState.SPIN_SHOOTING;
+            shooterTime.reset();
+            return true;
+        }
+        return false;
+    }
+
     public boolean shoot() {
         if (state == Shooter.ShooterState.IDLE && isShootable()) {
             pushBall(true);
@@ -419,5 +438,5 @@ public class Shooter {
         sorter.appendBallToMotif(color);
     }
 
-    public enum ShooterState {IDLE, SHOOTING, STOP_SHOOTING, REVOLVER_TURNING}
+    public enum ShooterState {IDLE, SHOOTING, STOP_SHOOTING, REVOLVER_TURNING, SPIN_SHOOTING}
 }

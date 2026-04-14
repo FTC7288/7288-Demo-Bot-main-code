@@ -26,4 +26,6 @@ public class ShooterConf {
     public static double STALL_THRESHOLD_TPS = 80.0;
     public static double STALL_TIMEOUT_SEC = 1;
     public static int BUSY_TOLERANCE_TICKS = 25;
+    public static double SPIN_SHOOT_VELOCITY = 2000;
+    public static int SPIN_SHOOT_MS = 400;
 }
