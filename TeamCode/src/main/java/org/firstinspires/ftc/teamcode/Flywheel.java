@@ -20,9 +20,20 @@ public class Flywheel {
          m1.setDirection(DcMotorSimple.Direction.REVERSE);
      }
 
-     public void setMotorPower(double Power) {
-         m1.setPower(Power);
+     public void setMotorPower(double power) {
+         m1.setPower(power);
      }
+     public void setMotorRPM(double targetRPM) {
+         //call this evry loop
+         double error = targetRPM -getRPM();
+         double ff = (kV * targetRPM) + kS ;
+         double fb = error * kP;
+         double power = ff + fb;
+
+         setMotorPower(power);
+     }
+
+
      public double getTicksPerSec() {
          return m1.getVelocity();
      }
