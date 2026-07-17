@@ -1,7 +1,7 @@
 #pragma once
 
 #include "jni.h"
-#include "../SDK/Header/Main.hpp"
+#include "../SDK/Header/main.hpp"
 
 
 extern "C" JNIEXPORT void JNICALL
@@ -9,4 +9,4 @@ Java_org_firstinspires_ftc_teamcode_CppTestOpMode_start(JNIEnv *env, jobject thi
 extern "C" JNIEXPORT void JNICALL
 Java_org_firstinspires_ftc_teamcode_CppTestOpMode_run(JNIEnv *env, jobject thiz, jdouble power);
 extern "C" JNIEXPORT void JNICALL
-Java_org_firstinspires_ftc_teamcode_CppTestOpMode_dump(JNIEnv *env, jobject thiz);
+Java_org_firstinspires_ftc_teamcode_nativeInit(JNIEnv *env, jobject thiz);

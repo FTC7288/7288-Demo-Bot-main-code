@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp
 public class CppTestOpMode extends OpMode {
-    static {System.loadLibrary("lib_loader");}
+    static {System.loadLibrary("sdk_loader");}
     public native void start(Object motor);
     public native void run(double power);
     public native void dump();

@@ -1,6 +1,4 @@
-#pragma once
-
-#include "../Header/Util.hpp"
+#include "../Header/util.hpp"
 
 JNIEnv* getEnv()
 {
@@ -16,3 +14,4 @@ namespace sdk
 {
     JavaVM* jvm = nullptr;
 }
+

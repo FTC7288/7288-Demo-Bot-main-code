@@ -1,18 +1,17 @@
 #pragma once
 
-#include "../Util.hpp"
+#include "../util.hpp"
 
 
-class Dc_Motor_Ex {
+class dc_motor_ex {
 private:
     jobject dcMotorSimple;
     jclass jclazz;
     jmethodID setPowerMethod;
 public:
-    explicit Dc_Motor_Ex(jobject motor) noexcept;
+    explicit dc_motor_ex(jobject motor) noexcept;
 
-    ~Dc_Motor_Ex();
-
+    ~dc_motor_ex();
 
     void setPower(double power);
 };

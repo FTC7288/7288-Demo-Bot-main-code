@@ -2,9 +2,9 @@
 // Created by Sam on 6/27/2026.
 //
 
-#include "../../Header/Hardware/Dc_Motor_Ex.hpp"
+#include "../../Header/Hardware/dc_motor_ex.hpp"
 
-Dc_Motor_Ex::Dc_Motor_Ex(jobject motor) noexcept
+dc_motor_ex::dc_motor_ex(jobject motor) noexcept
 {
     JNIEnv* env = getEnv();
 
@@ -28,7 +28,7 @@ Dc_Motor_Ex::Dc_Motor_Ex(jobject motor) noexcept
     }
 }
 
-Dc_Motor_Ex::~Dc_Motor_Ex()
+dc_motor_ex::~dc_motor_ex()
 {
     JNIEnv* env = getEnv();
 
@@ -36,7 +36,7 @@ Dc_Motor_Ex::~Dc_Motor_Ex()
     env->DeleteGlobalRef(jclazz);
 }
 
-void Dc_Motor_Ex::setPower(jdouble power)
+void dc_motor_ex::setPower(jdouble power)
 {
     JNIEnv* env = getEnv();
 
